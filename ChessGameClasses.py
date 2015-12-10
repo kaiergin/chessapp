@@ -56,4 +56,6 @@ class Piece:
         if y==0 and x==3:
             self.__bqueenlist.append(piecelist)
             return "blackqueen"
+    def clicked(self,piece):
+        print("hello")
         
