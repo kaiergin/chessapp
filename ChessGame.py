@@ -53,7 +53,10 @@ def onClick(arg1,arg2):
             else:
                 var=("Button(mainframe, image=white, command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
         exec(var)
-        total=False
+        if variables=="blank":
+            total=True
+        else:
+            total=False
     else:
         this=variables
         coords.clicked(arg1,arg2,variables)

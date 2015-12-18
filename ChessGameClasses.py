@@ -109,6 +109,8 @@ class Piece:
                 if check==x:
                     self.__bqueenlist.remove(x)
                     return "blackqueen"
+            self.boolean=True
+            return "blank"
         else:
             if r=="whitepawn":
                 self.__wpawnlist.append(check)
