@@ -112,6 +112,42 @@ class Piece:
             self.boolean=True
             return "blank"
         else:
+            for x in self.__wpawnlist:
+                if check==x:
+                    self.__wpawnlist.remove(x)
+            for x in self.__whorselist:
+                if check==x:
+                    self.__whorselist.remove(x)
+            for x in self.__wcastlelist:
+                if check==x:
+                    self.__wcastlelist.remove(x)
+            for x in self.__wkinglist:
+                if check==x:
+                    self.__wkinglist.remove(x)
+            for x in self.__wbishoplist:
+                if check==x:
+                    self.__wbishoplist.remove(x)
+            for x in self.__wqueenlist:
+                if check==x:
+                    self.__wqueenlist.remove(x)
+            for x in self.__bpawnlist:
+                if check==x:
+                    self.__bpawnlist.remove(x)
+            for x in self.__bhorselist:
+                if check==x:
+                    self.__bhorselist.remove(x)
+            for x in self.__bcastlelist:
+                if check==x:
+                    self.__bcastlelist.remove(x)
+            for x in self.__bkinglist:
+                if check==x:
+                    self.__bkinglist.remove(x)
+            for x in self.__bbishoplist:
+                if check==x:
+                    self.__bbishoplist.remove(x)
+            for x in self.__bqueenlist:
+                if check==x:
+                    self.__bqueenlist.remove(x)
             if r=="whitepawn":
                 self.__wpawnlist.append(check)
             elif r=="whitecastle":
@@ -136,4 +172,5 @@ class Piece:
                 self.__bkinglist.append(check)
             elif r=="blackqueen":
                 self.__bqueenlist.append(check)
+            
             self.boolean=True
