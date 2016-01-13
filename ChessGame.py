@@ -42,21 +42,21 @@ def onClick(arg1,arg2):
     global variables
     if total:
         variables=coords.clicked(arg1,arg2)
-        if arg2%2==0:
-            if (arg1)%2==0:
-                var=("Button(mainframe, image=white, command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
-            else:
-                var=("Button(mainframe, image=black, command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
-        else:
-            if (arg1)%2==0:
-                var=("Button(mainframe, image=black, command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
-            else:
-                var=("Button(mainframe, image=white, command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
-        exec(var)
         if variables=="blank":
             total=True
         else:
             total=False
+            if arg2%2==0:
+                if (arg1)%2==0:
+                    var=("Button(mainframe, image=white, command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
+                else:
+                    var=("Button(mainframe, image=black, command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
+            else:
+                if (arg1)%2==0:
+                    var=("Button(mainframe, image=black, command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
+                else:
+                    var=("Button(mainframe, image=white, command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
+            exec(var)
     else:
         this=variables
         coords.clicked(arg1,arg2,variables)
