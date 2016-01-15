@@ -19,6 +19,7 @@ class Piece:
         self.__bkinglist=list()
         self.boolean=True
         self.turn=True
+        self.pastSpot=[]
     
     def generate(self,x,y):
         piecelist=[x,y]
@@ -34,10 +35,10 @@ class Piece:
         if y==7 and (x==2 or x==5):
             self.__wbishoplist.append(piecelist)
             return "whitebishop"
-        if y==7 and x==3:
+        if y==7 and x==4:
             self.__wkinglist.append(piecelist)
             return "whiteking"
-        if y==7 and x==4:
+        if y==7 and x==3:
             self.__wqueenlist.append(piecelist)
             return "whitequeen"
         if y==1:
@@ -62,6 +63,7 @@ class Piece:
         check=[x,y]
         if self.boolean:
             self.boolean=False
+            self.pastSpot=check
             if self.turn:
                 self.turn=False
                 for x in self.__wpawnlist:
@@ -121,6 +123,69 @@ class Piece:
             self.boolean=True
             return "blank"
         else:
+            if r=="whitepawn":
+                if (self.pastSpot[1]==check[1]+1 and (self.pastSpot[0]==check[0] or self.pastSpot[0]==check[0]+1 or self.pastSpot[0]==check[0]-1)) or (self.pastSpot[1]==6 and self.pastSpot[1]==check[1]+2 and self.pastSpot[0]==check[0]):
+                    pass
+                else:
+                    self.boolean=True
+                    if self.turn:
+                        self.turn=False
+                    else:
+                        self.turn=True
+                    
+                    self.__wpawnlist.append(self.pastSpot)
+                    return "no"
+            elif r=="whitecastle":
+                if self.pastSpot[1]==check[1] or self.pastSpot[0]==check[0]:
+                    pass
+                else:
+                    self.boolean=True
+                    if self.turn:
+                        self.turn=False
+                    else:
+                        self.turn=True
+                    
+                    self.__wcastlelist.append(self.pastSpot)
+                    return "no"
+            elif r=="whitehorse":
+                pass
+            elif r=="whitebishop":
+                pass
+            elif r=="whiteking":
+                pass
+            elif r=="whitequeen":
+                pass
+            elif r=="blackpawn":
+                if (self.pastSpot[1]==check[1]-1 and (self.pastSpot[0]==check[0] or self.pastSpot[0]==check[0]+1 or self.pastSpot[0]==check[0]-1)) or (self.pastSpot[1]==1 and self.pastSpot[1]==check[1]-2 and self.pastSpot[0]==check[0]):
+                    pass
+                else:
+                    self.boolean=True
+                    if self.turn:
+                        self.turn=False
+                    else:
+                        self.turn=True
+                    
+                    self.__bpawnlist.append(self.pastSpot)
+                    return "no"
+            elif r=="blackcastle":
+                if self.pastSpot[1]==check[1] or self.pastSpot[0]==check[0]:
+                    pass
+                else:
+                    self.boolean=True
+                    if self.turn:
+                        self.turn=False
+                    else:
+                        self.turn=True
+                    
+                    self.__bcastlelist.append(self.pastSpot)
+            elif r=="blackhorse":
+                pass
+            elif r=="blackbishop":
+                pass
+            elif r=="blackking":
+                pass
+            elif r=="blackqueen":
+                pass
             for x in self.__wpawnlist:
                 if check==x:
                     self.__wpawnlist.remove(x)
@@ -183,3 +248,43 @@ class Piece:
                 self.__bqueenlist.append(check)
             
             self.boolean=True
+    def checklist(self,color,a,b):
+        num=[a,b]
+        if color=="white":
+            for x in self.__wpawnlist:
+                if num==x:
+                    return x
+            for x in self.__whorselist:
+                if num==x:
+                    return "no"
+            for x in self.__wcastlelist:
+                if num==x:
+                    return "no"
+            for x in self.__wkinglist:
+                if num==x:
+                    return "no"
+            for x in self.__wbishoplist:
+                if num==x:
+                    return "no"
+            for x in self.__wqueenlist:
+                if num==x:
+                    return "no"
+        else:
+            for x in self.__bpawnlist:
+                if num==x:
+                    return "no"
+            for x in self.__bhorselist:
+                if num==x:
+                    return "no"
+            for x in self.__bcastlelist:
+                if num==x:
+                    return "no"
+            for x in self.__bkinglist:
+                if num==x:
+                    return "no"
+            for x in self.__bbishoplist:
+                if num==x:
+                    return "no"
+            for x in self.__bqueenlist:
+                if num==x:
+                    return "no"

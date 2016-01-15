@@ -35,13 +35,16 @@ mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0,weight=1)
 mainframe.pack()
 buttonList=list()
+past=[]
 total=True
 variables=""
 def onClick(arg1,arg2):
     global total
     global variables
+    global past
     if total:
         variables=coords.clicked(arg1,arg2)
+        past=[arg1,arg2]
         if variables=="blank":
             total=True
         else:
@@ -59,9 +62,13 @@ def onClick(arg1,arg2):
             exec(var)
     else:
         this=variables
-        coords.clicked(arg1,arg2,variables)
-        if arg2%2==0:
-            if (arg1)%2==0:
+        correct=coords.clicked(arg1,arg2,variables)
+        thisput=[arg1,arg2]
+        if correct=="no":
+            thisput=past
+            correct="yes"
+        if thisput[1]%2==0:
+            if (thisput[0])%2==0:
                 if this=="whitepawn":
                     thisimage="pawnw"
                 elif this=="whitecastle":
@@ -88,7 +95,7 @@ def onClick(arg1,arg2):
                     thisimage="queenw2"
                 else:
                     thisimage="white"
-                var=("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
+                var=("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
             else:
                 if this=="whitepawn":
                     thisimage="pawnb"
@@ -116,9 +123,9 @@ def onClick(arg1,arg2):
                     thisimage="queenb2"
                 else:
                     thisimage="black"
-                var=("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
+                var=("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
         else:
-            if (arg1)%2==0:
+            if (thisput[0])%2==0:
                 if this=="whitepawn":
                     thisimage="pawnb"
                 elif this=="whitecastle":
@@ -145,7 +152,7 @@ def onClick(arg1,arg2):
                     thisimage="queenb2"
                 else:
                     thisimage="black"
-                var=("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
+                var=("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
             else:
                 if this=="whitepawn":
                     thisimage="pawnw"
@@ -173,7 +180,7 @@ def onClick(arg1,arg2):
                     thisimage="queenw2"
                 else:
                     thisimage="white"
-                var=("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
+                var=("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
         exec(var)
         total=True
     print(arg1,arg2)
