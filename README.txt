@@ -9,3 +9,5 @@ Update: Chess game movement complete. Pieces still don’t have chess logic and 
 Update 1/13/2016: Turns added
 
 Update 1/15/2016: Chess logic started. Basic frame added. Working for pawns but does not recognize when a piece jumps over another piece. Will fix soon.
+
+Update 1/19/2016: Pawn logic finished. Rook logic in progress.
