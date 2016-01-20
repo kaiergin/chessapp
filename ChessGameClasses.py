@@ -175,9 +175,87 @@ class Piece:
                     return "no"
             elif r=="whitecastle":
                 if self.pastSpot[1]==check[1]:
-                    pass
+                    if self.pastSpot[0]>check[0]:
+                        for l in range(self.pastSpot[0],check[0],-1):
+                            if self.checklist("both",l,check[1])=="no":
+                                self.boolean=True
+                                if self.turn:
+                                    self.turn=False
+                                else:
+                                    self.turn=True
+                                
+                                self.__wcastlelist.append(self.pastSpot)
+                                return "no"
+                    else:
+                        for l in range(self.pastSpot[0],check[0]):
+                            if self.checklist("both",l,check[1])=="no":
+                                self.boolean=True
+                                if self.turn:
+                                    self.turn=False
+                                else:
+                                    self.turn=True
+                                
+                                self.__wcastlelist.append(self.pastSpot)
+                                return "no"
+                        if self.pastSpot[0]==check[0]:
+                            self.boolean=True
+                            if self.turn:
+                                self.turn=False
+                            else:
+                                self.turn=True
+                            
+                            self.__wcastlelist.append(self.pastSpot)
+                            return "no"
+                    if self.checklist("white",check[0],check[1])=="no":
+                        self.boolean=True
+                        if self.turn:
+                            self.turn=False
+                        else:
+                            self.turn=True
+                        
+                        self.__wcastlelist.append(self.pastSpot)
+                        return "no"
+
                 elif self.pastSpot[0]==check[0]:
-                    pass
+                    if self.pastSpot[1]>check[1]:
+                        for l in range(self.pastSpot[1],check[1],-1):
+                            if self.checklist("both",check[0],l)=="no":
+                                self.boolean=True
+                                if self.turn:
+                                    self.turn=False
+                                else:
+                                    self.turn=True
+                                
+                                self.__wcastlelist.append(self.pastSpot)
+                                return "no"
+                    else:
+                        for l in range(self.pastSpot[1],check[1]):
+                            if self.checklist("both",check[0],l)=="no":
+                                self.boolean=True
+                                if self.turn:
+                                    self.turn=False
+                                else:
+                                    self.turn=True                                
+                                self.__wcastlelist.append(self.pastSpot)
+                                return "no"
+                        if self.pastSpot[1]==check[1]:
+                            self.boolean=True
+                            if self.turn:
+                                self.turn=False
+                            else:
+                                self.turn=True
+                            
+                            self.__wcastlelist.append(self.pastSpot)
+                            return "no"
+                    if self.checklist("white",check[0],check[1])=="no":
+                        self.boolean=True
+                        if self.turn:
+                            self.turn=False
+                        else:
+                            self.turn=True
+                        
+                        self.__wcastlelist.append(self.pastSpot)
+                        return "no"
                 else:
                     self.boolean=True
                     if self.turn:
@@ -188,9 +266,36 @@ class Piece:
                     self.__wcastlelist.append(self.pastSpot)
                     return "no"
             elif r=="whitehorse":
-                pass
+                if (self.pastSpot[0]+1==check[0] and self.pastSpot[1]+2==check[1]) or (self.pastSpot[0]-1==check[0] and self.pastSpot[1]+2==check[1]) or (self.pastSpot[0]+1==check[0] and self.pastSpot[1]-2==check[1]) or (self.pastSpot[0]-1==check[0] and self.pastSpot[1]-2==check[1]) or (self.pastSpot[0]+2==check[0] and self.pastSpot[1]+1==check[1]) or (self.pastSpot[0]-2==check[0] and self.pastSpot[1]+1==check[1]) or (self.pastSpot[0]+2==check[0] and self.pastSpot[1]-1==check[1]) or (self.pastSpot[0]-2==check[0] and self.pastSpot[1]-1==check[1]):
+                    if self.checklist("white",check[0],check[1])=="no":
+                        self.boolean=True
+                        if self.turn:
+                            self.turn=False
+                        else:
+                            self.turn=True
+                        self.__whorselist.append(self.pastSpot)
+                        return "no"
+                else:
+                    self.boolean=True
+                    if self.turn:
+                        self.turn=False
+                    else:
+                        self.turn=True
+                    self.__whorselist.append(self.pastSpot)
+                    return "no"
             elif r=="whitebishop":
-                pass
+                thisnumber1=self.pastSpot[0]-check[0]
+                thisnumber2=self.pastSpot[1]-check[1]
+                if thisnumber1==thisnumber2 or thisnumber1*-1==thisnumber2:
+                    pass
+                else:
+                    self.boolean=True
+                    if self.turn:
+                        self.turn=False
+                    else:
+                        self.turn=True
+                    self.__wbishoplist.append(self.pastSpot)
+                    return "no"
             elif r=="whiteking":
                 pass
             elif r=="whitequeen":
@@ -242,12 +347,92 @@ class Piece:
                         self.turn=False
                     else:
                         self.turn=True
-                    
                     self.__bpawnlist.append(self.pastSpot)
                     return "no"
             elif r=="blackcastle":
-                if self.pastSpot[1]==check[1] or self.pastSpot[0]==check[0]:
-                    pass
+                if self.pastSpot[1]==check[1]:
+                    if self.pastSpot[0]>check[0]:
+                        for l in range(self.pastSpot[0],check[0],-1):
+                            if self.checklist("both",l,check[1])=="no":
+                                self.boolean=True
+                                if self.turn:
+                                    self.turn=False
+                                else:
+                                    self.turn=True
+                                
+                                self.__bcastlelist.append(self.pastSpot)
+                                return "no"
+                    else:
+                        for l in range(self.pastSpot[0],check[0]):
+                            if self.checklist("both",l,check[1])=="no":
+                                self.boolean=True
+                                if self.turn:
+                                    self.turn=False
+                                else:
+                                    self.turn=True
+                                
+                                self.__bcastlelist.append(self.pastSpot)
+                                return "no"
+                        if self.pastSpot[0]==check[0]:
+                            self.boolean=True
+                            if self.turn:
+                                self.turn=False
+                            else:
+                                self.turn=True
+                            
+                            self.__bcastlelist.append(self.pastSpot)
+                            return "no"
+                    if self.checklist("black",check[0],check[1])=="no":
+                        self.boolean=True
+                        if self.turn:
+                            self.turn=False
+                        else:
+                            self.turn=True
+                        
+                        self.__bcastlelist.append(self.pastSpot)
+                        return "no"
+                elif self.pastSpot[0]==check[0]:
+                    if self.pastSpot[1]>check[1]:
+                        for l in range(self.pastSpot[1],check[1],-1):
+                            if self.checklist("both",check[0],l)=="no":
+                                self.boolean=True
+                                if self.turn:
+                                    self.turn=False
+                                else:
+                                    self.turn=True
+                                
+                                self.__bcastlelist.append(self.pastSpot)
+                                return "no"
+                    else:
+                        for l in range(self.pastSpot[1],check[1]):
+                            if self.checklist("both",check[0],l)=="no":
+                                self.boolean=True
+                                if self.turn:
+                                    self.turn=False
+                                else:
+                                    self.turn=True
+                                
+                                self.__bcastlelist.append(self.pastSpot)
+                                return "no"
+                        if self.pastSpot[1]==check[1]:
+                            self.boolean=True
+                            if self.turn:
+                                self.turn=False
+                            else:
+                                self.turn=True
+                            
+                            self.__bcastlelist.append(self.pastSpot)
+                            return "no"
+                    if self.checklist("black",check[0],check[1])=="no":
+                        self.boolean=True
+                        if self.turn:
+                            self.turn=False
+                        else:
+                            self.turn=True
+                        
+                        self.__bcastlelist.append(self.pastSpot)
+                        return "no"
+                            
                 else:
                     self.boolean=True
                     if self.turn:
@@ -256,10 +441,38 @@ class Piece:
                         self.turn=True
                     
                     self.__bcastlelist.append(self.pastSpot)
+                    return "no"
             elif r=="blackhorse":
-                pass
+                if (self.pastSpot[0]+1==check[0] and self.pastSpot[1]+2==check[1]) or (self.pastSpot[0]-1==check[0] and self.pastSpot[1]+2==check[1]) or (self.pastSpot[0]+1==check[0] and self.pastSpot[1]-2==check[1]) or (self.pastSpot[0]-1==check[0] and self.pastSpot[1]-2==check[1]) or (self.pastSpot[0]+2==check[0] and self.pastSpot[1]+1==check[1]) or (self.pastSpot[0]-2==check[0] and self.pastSpot[1]+1==check[1]) or (self.pastSpot[0]+2==check[0] and self.pastSpot[1]-1==check[1]) or (self.pastSpot[0]-2==check[0] and self.pastSpot[1]-1==check[1]):
+                    if self.checklist("black",check[0],check[1])=="no":
+                        self.boolean=True
+                        if self.turn:
+                            self.turn=False
+                        else:
+                            self.turn=True
+                        self.__bhorselist.append(self.pastSpot)
+                        return "no"
+                else:
+                    self.boolean=True
+                    if self.turn:
+                        self.turn=False
+                    else:
+                        self.turn=True
+                    self.__bhorselist.append(self.pastSpot)
+                    return "no"
             elif r=="blackbishop":
-                pass
+                thisnumber1=self.pastSpot[0]-check[0]
+                thisnumber2=self.pastSpot[1]-check[1]
+                if thisnumber1==thisnumber2 or thisnumber1*-1==thisnumber2:
+                    pass
+                else:
+                    self.boolean=True
+                    if self.turn:
+                        self.turn=False
+                    else:
+                        self.turn=True
+                    self.__bbishoplist.append(self.pastSpot)
+                    return "no"
             elif r=="blackking":
                 pass
             elif r=="blackqueen":
