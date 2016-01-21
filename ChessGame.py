@@ -49,7 +49,7 @@ imageinit=PhotoImage(file="kingb.gif")
 kingb=imageinit.subsample(2,2)
 imageinit=PhotoImage(file="kingw2.gif")
 kingw2=imageinit.subsample(2,2)
-kimageinit=PhotoImage(file="kingb2.gif")
+imageinit=PhotoImage(file="kingb2.gif")
 kingb2=imageinit.subsample(2,2)
 imageinit=PhotoImage(file="queenw.gif")
 queenw=imageinit.subsample(2,2)
@@ -64,7 +64,7 @@ mainframe=Frame(root)
 mainframe.grid(column=0, row=0)
 mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0,weight=1)
-mainframe.pack()
+mainframe.pack(side="left")
 buttonList=list()
 past=[]
 total=True
@@ -215,130 +215,143 @@ def onClick(arg1,arg2):
         exec(var)
         total=True
     print(arg1,arg2)
-    
-for y in range(8):
-    if y%2==0:
-        for x in range(8):
-            if x%2==0:
-                this=coords.generate(x,y)
-                if this=="whitepawn":
-                    thisimage="pawnw"
-                elif this=="whitecastle":
-                    thisimage="castlew"
-                elif this=="whitehorse":
-                    thisimage="horsew"
-                elif this=="whitebishop":
-                    thisimage="bishopw"
-                elif this=="whiteking":
-                    thisimage="kingw"
-                elif this=="whitequeen":
-                    thisimage="queenw"
-                elif this=="blackpawn":
-                    thisimage="pawnw2"
-                elif this=="blackcastle":
-                    thisimage="castlew2"
-                elif this=="blackhorse":
-                    thisimage="horsew2"
-                elif this=="blackbishop":
-                    thisimage="bishopw2"
-                elif this=="blackking":
-                    thisimage="kingw2"
-                elif this=="blackqueen":
-                    thisimage="queenw2"
-                else:
-                    thisimage="white"
-                buttonList.append("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(x)+","+str(y)+")).grid(column="+str(x)+", row="+str(y)+")")
-
-            else:
-                this=coords.generate(x,y)
-                if this=="whitepawn":
-                    thisimage="pawnb"
-                elif this=="whitecastle":
-                    thisimage="castleb"
-                elif this=="whitehorse":
-                    thisimage="horseb"
-                elif this=="whitebishop":
-                    thisimage="bishopb"
-                elif this=="whiteking":
-                    thisimage="kingb"
-                elif this=="whitequeen":
-                    thisimage="queenb"
-                elif this=="blackpawn":
-                    thisimage="pawnb2"
-                elif this=="blackcastle":
-                    thisimage="castleb2"
-                elif this=="blackhorse":
-                    thisimage="horseb2"
-                elif this=="blackbishop":
-                    thisimage="bishopb2"
-                elif this=="blackking":
-                    thisimage="kingb2"
-                elif this=="blackqueen":
-                    thisimage="queenb2"
-                else:
-                    thisimage="black"
-                buttonList.append("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(x)+","+str(y)+")).grid(column="+str(x)+", row="+str(y)+")")
-
-    else:
-        for x in range(8):
-            if x%2==0:
-                this=coords.generate(x,y)
-                if this=="whitepawn":
-                    thisimage="pawnb"
-                elif this=="whitecastle":
-                    thisimage="castleb"
-                elif this=="whitehorse":
-                    thisimage="horseb"
-                elif this=="whitebishop":
-                    thisimage="bishopb"
-                elif this=="whiteking":
-                    thisimage="kingb"
-                elif this=="whitequeen":
-                    thisimage="queenb"
-                elif this=="blackpawn":
-                    thisimage="pawnb2"
-                elif this=="blackcastle":
-                    thisimage="castleb2"
-                elif this=="blackhorse":
-                    thisimage="horseb2"
-                elif this=="blackbishop":
-                    thisimage="bishopb2"
-                elif this=="blackking":
-                    thisimage="kingb2"
-                elif this=="blackqueen":
-                    thisimage="queenb2"
-                else:
-                    thisimage="black"
-                buttonList.append("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(x)+","+str(y)+")).grid(column="+str(x)+", row="+str(y)+")")
-            else:
-                this=coords.generate(x,y)
-                if this=="whitepawn":
-                    thisimage="pawnw"
-                elif this=="whitecastle":
-                    thisimage="castlew"
-                elif this=="whitehorse":
-                    thisimage="horsew"
-                elif this=="whitebishop":
-                    thisimage="bishopw"
-                elif this=="whiteking":
-                    thisimage="kingw"
-                elif this=="whitequeen":
-                    thisimage="queenw"
-                elif this=="blackpawn":
-                    thisimage="pawnw2"
-                elif this=="blackcastle":
-                    thisimage="castlew2"
-                elif this=="blackhorse":
-                    thisimage="horsew2"
-                elif this=="blackbishop":
-                    thisimage="bishopw2"
-                elif this=="blackking":
-                    thisimage="kingw2"
-                elif this=="blackqueen":
-                    thisimage="queenw2"
-                else:
-                    thisimage="white"
-                buttonList.append("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(x)+","+str(y)+")).grid(column="+str(x)+", row="+str(y)+")")
-for imagesin in buttonList:
-    exec(imagesin)
+def reStart():
+	coords.clear()
+	global buttonList
+	global past
+	global total
+	global variables
+	buttonList=list()
+	past=[]
+	total=True
+	variables=""
+	for y in range(8):
+	    if y%2==0:
+	        for x in range(8):
+	            if x%2==0:
+	                this=coords.generate(x,y)
+	                if this=="whitepawn":
+	                    thisimage="pawnw"
+	                elif this=="whitecastle":
+	                    thisimage="castlew"
+	                elif this=="whitehorse":
+	                    thisimage="horsew"
+	                elif this=="whitebishop":
+	                    thisimage="bishopw"
+	                elif this=="whiteking":
+	                    thisimage="kingw"
+	                elif this=="whitequeen":
+	                    thisimage="queenw"
+	                elif this=="blackpawn":
+	                    thisimage="pawnw2"
+	                elif this=="blackcastle":
+	                    thisimage="castlew2"
+	                elif this=="blackhorse":
+	                    thisimage="horsew2"
+	                elif this=="blackbishop":
+	                    thisimage="bishopw2"
+	                elif this=="blackking":
+	                    thisimage="kingw2"
+	                elif this=="blackqueen":
+	                    thisimage="queenw2"
+	                else:
+	                    thisimage="white"
+	                buttonList.append("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(x)+","+str(y)+")).grid(column="+str(x)+", row="+str(y)+")")
+	
+	            else:
+	                this=coords.generate(x,y)
+	                if this=="whitepawn":
+	                    thisimage="pawnb"
+	                elif this=="whitecastle":
+	                    thisimage="castleb"
+	                elif this=="whitehorse":
+	                    thisimage="horseb"
+	                elif this=="whitebishop":
+	                    thisimage="bishopb"
+	                elif this=="whiteking":
+	                    thisimage="kingb"
+	                elif this=="whitequeen":
+	                    thisimage="queenb"
+	                elif this=="blackpawn":
+	                    thisimage="pawnb2"
+	                elif this=="blackcastle":
+	                    thisimage="castleb2"
+	                elif this=="blackhorse":
+	                    thisimage="horseb2"
+	                elif this=="blackbishop":
+	                    thisimage="bishopb2"
+	                elif this=="blackking":
+	                    thisimage="kingb2"
+	                elif this=="blackqueen":
+	                    thisimage="queenb2"
+	                else:
+	                    thisimage="black"
+	                buttonList.append("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(x)+","+str(y)+")).grid(column="+str(x)+", row="+str(y)+")")
+	
+	    else:
+	        for x in range(8):
+	            if x%2==0:
+	                this=coords.generate(x,y)
+	                if this=="whitepawn":
+	                    thisimage="pawnb"
+	                elif this=="whitecastle":
+	                    thisimage="castleb"
+	                elif this=="whitehorse":
+	                    thisimage="horseb"
+	                elif this=="whitebishop":
+	                    thisimage="bishopb"
+	                elif this=="whiteking":
+	                    thisimage="kingb"
+	                elif this=="whitequeen":
+	                    thisimage="queenb"
+	                elif this=="blackpawn":
+	                    thisimage="pawnb2"
+	                elif this=="blackcastle":
+	                    thisimage="castleb2"
+	                elif this=="blackhorse":
+	                    thisimage="horseb2"
+	                elif this=="blackbishop":
+	                    thisimage="bishopb2"
+	                elif this=="blackking":
+						thisimage="kingb2"
+	                elif this=="blackqueen":
+	                    thisimage="queenb2"
+	                else:
+	                    thisimage="black"
+	                buttonList.append("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(x)+","+str(y)+")).grid(column="+str(x)+", row="+str(y)+")")
+	            else:
+	                this=coords.generate(x,y)
+	                if this=="whitepawn":
+	                    thisimage="pawnw"
+	                elif this=="whitecastle":
+	                    thisimage="castlew"
+	                elif this=="whitehorse":
+	                    thisimage="horsew"
+	                elif this=="whitebishop":
+	                    thisimage="bishopw"
+	                elif this=="whiteking":
+	                    thisimage="kingw"
+	                elif this=="whitequeen":
+	                    thisimage="queenw"
+	                elif this=="blackpawn":
+	                    thisimage="pawnw2"
+	                elif this=="blackcastle":
+	                    thisimage="castlew2"
+	                elif this=="blackhorse":
+	                    thisimage="horsew2"
+	                elif this=="blackbishop":
+	                    thisimage="bishopw2"
+	                elif this=="blackking":
+	                    thisimage="kingw2"
+	                elif this=="blackqueen":
+	                    thisimage="queenw2"
+	                else:
+	                    thisimage="white"
+	                buttonList.append("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(x)+","+str(y)+")).grid(column="+str(x)+", row="+str(y)+")")
+	for imagesin in buttonList:
+	    exec(imagesin)
+reStart()
+optionsframe=Frame(root,padx=20)
+reset=Button(optionsframe,text="Reset",command=reStart).grid(column=1,row=1)
+optionsframe.pack(side="right")
 root.mainloop()

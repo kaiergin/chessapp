@@ -17,3 +17,5 @@ Update 1/20/2016: Rook logic finished. Knight logic finished. Bishop logic in pr
 Update 1/21/2016: Bishop logic finished. Queen logic finished. Added support for python 2.7. Resized images to half size.
 
 To do: Add king logic. Add castling. Add pawn to queen change. Add check (Maybe checkmate). Add separate side frame. Add undo button. Add redo game button. Add list of captured pieces. Add option to change piece size upon launch.
+
+Update 1/21/2016: King logic finished (not check or checkmate). Side frame added. Redo game button added.
