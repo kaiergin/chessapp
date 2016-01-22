@@ -80,16 +80,122 @@ def onClick(arg1,arg2):
             total=True
         else:
             total=False
-            if arg2%2==0:
-                if (arg1)%2==0:
-                    var=("Button(mainframe, image=white, command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
+            this=variables
+            thisput=past
+            if thisput[1]%2==0:
+                if (thisput[0])%2==0:
+                    if this=="whitepawn":
+                        thisimage="pawnw"
+                    elif this=="whitecastle":
+                        thisimage="castlew"
+                    elif this=="whitehorse":
+                        thisimage="horsew"
+                    elif this=="whitebishop":
+                        thisimage="bishopw"
+                    elif this=="whiteking":
+                        thisimage="kingw"
+                    elif this=="whitequeen":
+                        thisimage="queenw"
+                    elif this=="blackpawn":
+                        thisimage="pawnw2"
+                    elif this=="blackcastle":
+                        thisimage="castlew2"
+                    elif this=="blackhorse":
+                        thisimage="horsew2"
+                    elif this=="blackbishop":
+                        thisimage="bishopw2"
+                    elif this=="blackking":
+                        thisimage="kingw2"
+                    elif this=="blackqueen":
+                        thisimage="queenw2"
+                    else:
+                        thisimage="white"
+                    var=("Button(mainframe, highlightbackground='yellow', image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
                 else:
-                    var=("Button(mainframe, image=black, command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
+                    if this=="whitepawn":
+                        thisimage="pawnb"
+                    elif this=="whitecastle":
+                        thisimage="castleb"
+                    elif this=="whitehorse":
+                        thisimage="horseb"
+                    elif this=="whitebishop":
+                        thisimage="bishopb"
+                    elif this=="whiteking":
+                        thisimage="kingb"
+                    elif this=="whitequeen":
+                        thisimage="queenb"
+                    elif this=="blackpawn":
+                        thisimage="pawnb2"
+                    elif this=="blackcastle":
+                        thisimage="castleb2"
+                    elif this=="blackhorse":
+                        thisimage="horseb2"
+                    elif this=="blackbishop":
+                        thisimage="bishopb2"
+                    elif this=="blackking":
+                        thisimage="kingb2"
+                    elif this=="blackqueen":
+                        thisimage="queenb2"
+                    else:
+                        thisimage="black"
+                    var=("Button(mainframe, highlightbackground='yellow', image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
             else:
-                if (arg1)%2==0:
-                    var=("Button(mainframe, image=black, command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
+                if (thisput[0])%2==0:
+                    if this=="whitepawn":
+                        thisimage="pawnb"
+                    elif this=="whitecastle":
+                        thisimage="castleb"
+                    elif this=="whitehorse":
+                        thisimage="horseb"
+                    elif this=="whitebishop":
+                        thisimage="bishopb"
+                    elif this=="whiteking":
+                        thisimage="kingb"
+                    elif this=="whitequeen":
+                        thisimage="queenb"
+                    elif this=="blackpawn":
+                        thisimage="pawnb2"
+                    elif this=="blackcastle":
+                        thisimage="castleb2"
+                    elif this=="blackhorse":
+                        thisimage="horseb2"
+                    elif this=="blackbishop":
+                        thisimage="bishopb2"
+                    elif this=="blackking":
+                        thisimage="kingb2"
+                    elif this=="blackqueen":
+                        thisimage="queenb2"
+                    else:
+                        thisimage="black"
+                    var=("Button(mainframe, highlightbackground='yellow', image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
                 else:
-                    var=("Button(mainframe, image=white, command=lambda: onClick("+str(arg1)+","+str(arg2)+")).grid(column="+str(arg1)+", row="+str(arg2)+")")
+                    if this=="whitepawn":
+                        thisimage="pawnw"
+                    elif this=="whitecastle":
+                        thisimage="castlew"
+                    elif this=="whitehorse":
+                        thisimage="horsew"
+                    elif this=="whitebishop":
+                        thisimage="bishopw"
+                    elif this=="whiteking":
+                        thisimage="kingw"
+                    elif this=="whitequeen":
+                        thisimage="queenw"
+                    elif this=="blackpawn":
+                        thisimage="pawnw2"
+                    elif this=="blackcastle":
+                        thisimage="castlew2"
+                    elif this=="blackhorse":
+                        thisimage="horsew2"
+                    elif this=="blackbishop":
+                        thisimage="bishopw2"
+                    elif this=="blackking":
+                        thisimage="kingw2"
+                    elif this=="blackqueen":
+                        thisimage="queenw2"
+                    else:
+                        thisimage="white"
+                    var=("Button(mainframe, highlightbackground='yellow', image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
             exec(var)
     else:
         this=variables
@@ -98,6 +204,17 @@ def onClick(arg1,arg2):
         if correct=="no":
             thisput=past
             correct="yes"
+        if past[1]%2==0:
+            if (past[0])%2==0:
+                var=("Button(mainframe, image=white, command=lambda: onClick("+str(past[0])+","+str(past[1])+")).grid(column="+str(past[0])+", row="+str(past[1])+")")
+            else:
+                var=("Button(mainframe, image=black, command=lambda: onClick("+str(past[0])+","+str(past[1])+")).grid(column="+str(past[0])+", row="+str(past[1])+")")
+        else:
+            if (past[0])%2==0:
+                var=("Button(mainframe, image=black, command=lambda: onClick("+str(past[0])+","+str(past[1])+")).grid(column="+str(past[0])+", row="+str(past[1])+")")
+            else:
+                var=("Button(mainframe, image=white, command=lambda: onClick("+str(past[0])+","+str(past[1])+")).grid(column="+str(past[0])+", row="+str(past[1])+")")
+        exec(var)
         if thisput[1]%2==0:
             if (thisput[0])%2==0:
                 if this=="whitepawn":

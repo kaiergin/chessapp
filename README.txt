@@ -19,3 +19,5 @@ Update 1/21/2016: Bishop logic finished. Queen logic finished. Added support for
 To do: Add king logic. Add castling. Add pawn to queen change. Add check (Maybe checkmate). Add separate side frame. Add undo button. Add redo game button. Add list of captured pieces. Add option to change piece size upon launch.
 
 Update 1/21/2016: King logic finished (not check or checkmate). Side frame added. Redo game button added.
+
+Update 1/22/2016: Changed piece movement to highlight piece when selected. Started to add pawn to queen when pawn reaches opposite side of board. Code comments coming soon.

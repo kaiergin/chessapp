@@ -173,6 +173,9 @@ class Piece:
 					
 					self.__wpawnlist.append(self.pastSpot)
 					return "no"
+				if check[1]==0:
+                                        self.__wqueenlist.append(check)
+                                        return "special"
 			elif r=="whitecastle":
 				if self.pastSpot[1]==check[1]:
 					if self.pastSpot[0]>check[0]:
@@ -558,6 +561,9 @@ class Piece:
 						self.turn=True
 					self.__bpawnlist.append(self.pastSpot)
 					return "no"
+				if check[1]==7:
+                                        self.__bqueenlist.append(check)
+                                        return "special"
 			elif r=="blackcastle":
 				if self.pastSpot[1]==check[1]:
 					if self.pastSpot[0]>check[0]:
