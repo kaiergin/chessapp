@@ -4,6 +4,15 @@ Each side will have a class with sub classes for pieces
 Calculations will have to be made for each class’s possible movement
 Bot will think up to 4 moves ahead looking at every move possibility and taking the path that results in the most possible points (based on piece captures)
 
+----------------
+NOTE: 
+Because of complications when working with tkinter, the following were not able to work
+- creating transparent buttons ontop of labels
+- creating transparent labels ontop of buttons
+- saving multiple different buttons to a list
+There were work arounds but much extra code was needed
+----------------
+
 Update: Chess game movement complete. Pieces still don’t have chess logic and do not understand player turns. Hopefully will add in turns and some of chess logic before end of class.
 
 Update 1/13/2016: Turns added
