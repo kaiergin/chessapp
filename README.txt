@@ -21,3 +21,7 @@ To do: Add king logic. Add castling. Add pawn to queen change. Add check (Maybe 
 Update 1/21/2016: King logic finished (not check or checkmate). Side frame added. Redo game button added.
 
 Update 1/22/2016: Changed piece movement to highlight piece when selected. Started to add pawn to queen when pawn reaches opposite side of board. Code comments coming soon.
+
+Update 1/22/2016: Pawn changes to queen when other side is reached.
+
+Update 1/25/2016: King bug fixed. Check logic started. Code comments started. Made function for switching resetting turn if false move is made. Saved about 250 lines of code.

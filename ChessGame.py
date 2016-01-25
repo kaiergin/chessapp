@@ -1,12 +1,17 @@
+#Kai Ergin
+#Final Project Chess Game
+#GUI script
 try:
     # for Python2
     from Tkinter import *
 except ImportError:
     # for Python3
     from tkinter import *
+#Import classes and logic for pieces
 import ChessGameClasses as cgc
 coords=cgc.Piece()
 root=Tk()
+#Create images
 imageinit=PhotoImage(file="white.gif")
 white=imageinit.subsample(2,2)
 imageinit=PhotoImage(file="black.gif")
@@ -65,23 +70,27 @@ mainframe.grid(column=0, row=0)
 mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0,weight=1)
 mainframe.pack(side="left")
-buttonList=list()
-past=[]
-total=True
-variables=""
+buttonList=list() #List of all buttons /NOT USED
+past=[] #Coordinate of where piece previously was
+total=True #Tells whether piece is being selected or being moved
+variables="" #Type of piece selected
+
+#Function when a piece is clicked
 def onClick(arg1,arg2):
     global total
     global variables
     global past
     if total:
-        variables=coords.clicked(arg1,arg2)
+        variables=coords.clicked(arg1,arg2) #Checks to see what piece is on button selected
         past=[arg1,arg2]
-        if variables=="blank":
+        if variables=="blank": #If there is no piece on button selected
             total=True
         else:
             total=False
             this=variables
             thisput=past
+            #This determines whether the square has a black or white background
+            #Highlights background of piece by replacing it with a new button
             if thisput[1]%2==0:
                 if (thisput[0])%2==0:
                     if this=="whitepawn":
@@ -198,13 +207,18 @@ def onClick(arg1,arg2):
                     var=("Button(mainframe, highlightbackground='yellow', image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
             exec(var)
     else:
+    	#If piece has already been selected...
         this=variables
-        correct=coords.clicked(arg1,arg2,variables)
+        correct=coords.clicked(arg1,arg2,variables) #Checks to see if new spot is valid. If valid, outputs nothing.
         thisput=[arg1,arg2]
         if correct=="no":
-            thisput=past
+            thisput=past #If not a valid spot to move piece, sets the new coordinates to the old coordinates
             correct="yes"
-        if past[1]%2==0:
+        if correct=="special1": #For when a pawn turns to queen
+        	this="whitequeen"
+        if correct=="special2":
+        	this="blackqueen"
+        if past[1]%2==0: #Replaces previous coordinate with blank tile
             if (past[0])%2==0:
                 var=("Button(mainframe, image=white, command=lambda: onClick("+str(past[0])+","+str(past[1])+")).grid(column="+str(past[0])+", row="+str(past[1])+")")
             else:
@@ -215,7 +229,7 @@ def onClick(arg1,arg2):
             else:
                 var=("Button(mainframe, image=white, command=lambda: onClick("+str(past[0])+","+str(past[1])+")).grid(column="+str(past[0])+", row="+str(past[1])+")")
         exec(var)
-        if thisput[1]%2==0:
+        if thisput[1]%2==0: #Creates new piece at coordinates
             if (thisput[0])%2==0:
                 if this=="whitepawn":
                     thisimage="pawnw"
@@ -332,16 +346,18 @@ def onClick(arg1,arg2):
         exec(var)
         total=True
     print(arg1,arg2)
+#Function used to initially generate chessboard and place pieces. Also used for resetting the chessboard
 def reStart():
     coords.clear()
     global buttonList
     global past
     global total
     global variables
-    buttonList=list()
+    buttonList=[]
     past=[]
     total=True
     variables=""
+    #Goes through each tile on chessboard and asks class file if there is a piece here initially
     for y in range(8):
         if y%2==0:
             for x in range(8):
@@ -374,7 +390,6 @@ def reStart():
                     else:
                         thisimage="white"
                     buttonList.append("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(x)+","+str(y)+")).grid(column="+str(x)+", row="+str(y)+")")
-    
                 else:
                     this=coords.generate(x,y)
                     if this=="whitepawn":
@@ -404,7 +419,6 @@ def reStart():
                     else:
                         thisimage="black"
                     buttonList.append("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(x)+","+str(y)+")).grid(column="+str(x)+", row="+str(y)+")")
-    
         else:
             for x in range(8):
                 if x%2==0:
@@ -467,7 +481,8 @@ def reStart():
                     buttonList.append("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(x)+","+str(y)+")).grid(column="+str(x)+", row="+str(y)+")")
     for imagesin in buttonList:
         exec(imagesin)
-reStart()
+reStart() #Initial generation
+#Options frame with reset button, captured pieces list, undo button, etc.
 optionsframe=Frame(root,padx=20)
 reset=Button(optionsframe,text="Reset",command=reStart).grid(column=1,row=1)
 optionsframe.pack(side="right")
