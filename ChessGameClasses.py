@@ -22,6 +22,8 @@ class Piece:
 		self.pastSpot=[]
 		self.special=False
 		self.special1=False
+		self.whitecheck=False
+		self.blackcheck=False
 	def generate(self,x,y):
 		piecelist=[x,y]
 		if y==6:
@@ -549,42 +551,67 @@ class Piece:
 					self.switcher()
 					self.__bqueenlist.append(self.pastSpot)
 					return "no"
+			didremovepiece=False
 			for x in self.__wpawnlist:
 				if check==x:
 					self.__wpawnlist.remove(x)
+					piecetaken="self.__wpawnlist"
+					didremovepiece=True
 			for x in self.__whorselist:
 				if check==x:
 					self.__whorselist.remove(x)
+					piecetaken="self.__whorselist"
+					didremovepiece=True
 			for x in self.__wcastlelist:
 				if check==x:
 					self.__wcastlelist.remove(x)
+					piecetaken="self.__wcastlelist"
+					didremovepiece=True
 			for x in self.__wkinglist:
 				if check==x:
 					self.__wkinglist.remove(x)
+					piecetaken="self.__wkinglist"
+					didremovepiece=True
 			for x in self.__wbishoplist:
 				if check==x:
 					self.__wbishoplist.remove(x)
+					piecetaken="self.__wbishoplist"
+					didremovepiece=True
 			for x in self.__wqueenlist:
 				if check==x:
 					self.__wqueenlist.remove(x)
+					piecetaken="self.__wqueenlist"
+					didremovepiece=True
 			for x in self.__bpawnlist:
 				if check==x:
 					self.__bpawnlist.remove(x)
+					piecetaken="self.__bpawnlist"
+					didremovepiece=True
 			for x in self.__bhorselist:
 				if check==x:
 					self.__bhorselist.remove(x)
+					piecetaken="self.__bhorselist"
+					didremovepiece=True
 			for x in self.__bcastlelist:
 				if check==x:
 					self.__bcastlelist.remove(x)
+					piecetaken="self.__bcastlelist"
+					didremovepiece=True
 			for x in self.__bkinglist:
 				if check==x:
 					self.__bkinglist.remove(x)
+					piecetaken="self.__bkinglist"
+					didremovepiece=True
 			for x in self.__bbishoplist:
 				if check==x:
 					self.__bbishoplist.remove(x)
+					piecetaken="self.__bbishoplist"
+					didremovepiece=True
 			for x in self.__bqueenlist:
 				if check==x:
 					self.__bqueenlist.remove(x)
+					piecetaken="self.__bqueenlist"
+					didremovepiece=True
 			if r=="whitepawn":
 				self.__wpawnlist.append(check)
 			elif r=="whitecastle":
@@ -617,6 +644,54 @@ class Piece:
 			if self.special1:
 				self.special1=False
 				return "special2"
+			arecheck=False
+			if self.turn:
+				arecheck=self.checkcheck("black")
+			else:
+				arecheck=self.checkcheck("white")
+			if arecheck:
+				print("CHECK")
+				if r=="whitepawn":
+					self.__wpawnlist.append(self.pastSpot)
+					self.__wpawnlist.remove(check)
+				elif r=="whitecastle":
+					self.__wcastlelist.append(self.pastSpot)
+					self.__wcastlelist.remove(check)
+				elif r=="whitehorse":
+					self.__whorselist.append(self.pastSpot)
+					self.__whorselist.remove(check)
+				elif r=="whitebishop":
+					self.__wbishoplist.append(self.pastSpot)
+					self.__wbishoplist.remove(check)
+				elif r=="whiteking":
+					self.__wkinglist.append(self.pastSpot)
+					self.__wkinglist.remove(check)
+				elif r=="whitequeen":
+					self.__wqueenlist.append(self.pastSpot)
+					self.__wqueenlist.remove(check)
+				elif r=="blackpawn":
+					self.__bpawnlist.append(self.pastSpot)
+					self.__bpawnlist.remove(check)
+				elif r=="blackcastle":
+					self.__bcastlelist.append(self.pastSpot)
+					self.__bcastlelist.remove(check)
+				elif r=="blackhorse":
+					self.__bhorselist.append(self.pastSpot)
+					self.__bhorselist.remove(check)
+				elif r=="blackbishop":
+					self.__bbishoplist.append(self.pastSpot)
+					self.__bbishoplist.remove(check)
+				elif r=="blackking":
+					self.__bkinglist.append(self.pastSpot)
+					self.__bkinglist.remove(check)
+				elif r=="blackqueen":
+					self.__bqueenlist.append(self.pastSpot)
+					self.__bqueenlist.remove(check)
+				if didremovepiece:
+					runvar="self."+piecetaken+".append(check)"
+					exec(runvar)
+				self.switcher()
+				return "no"
 	def checklist(self,color,a,b):
 		num=[a,b]
 		if color=="white":
@@ -712,9 +787,997 @@ class Piece:
 		self.boolean=True
 		self.turn=True
 		self.pastSpot=[]
+		self.whitecheck=False
+		self.blackcheck=False
 	def switcher(self):
 		self.boolean=True
 		if self.turn:
 			self.turn=False
 		else:
 			self.turn=True
+	def checkcheck(self,side):
+		ischeck=False
+		if side=="white":
+			for x in self.__wkinglist:
+				for y in self.__bcastlelist:
+					if y[0]==x[0]:
+						print("black castle")
+						ischeck=True
+						if y[1]-x[1]<0:
+							placement="neg"
+						else:
+							placement="pos"
+						distance=abs(y[1]-x[1])
+						for n in self.__bpawnlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bhorselist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__whorselist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bqueenlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wqueenlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bkinglist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+					elif y[1]==x[1]:
+						print("black castle")
+						ischeck=True
+						if y[0]-x[0]<0:
+							placement="neg"
+						else:
+							placement="pos"
+						distance=abs(y[0]-x[0])
+						for n in self.__bpawnlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bhorselist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__whorselist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bqueenlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wqueenlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bkinglist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+					if ischeck:
+						return True
+				for y in self.__bbishoplist:
+					if x[0]-y[0]==x[1]-y[1]:
+						print("black bishop")
+						ischeck=True
+						distance=abs(x[0]-y[0])
+						if x[0]-y[0]<0:
+							pos="neg"
+						else:
+							pos="pos"
+						for n in self.__bpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wqueenlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bqueenlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__whorselist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bhorselist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bkinglist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						
+					elif -1*(x[0]-y[0])==x[1]-y[1]:
+						print("black bishop")
+						ischeck=True
+						distance=abs(x[0]-y[0])
+						if x[0]-y[0]<0:
+							pos="neg"
+						else:
+							pos="pos"
+						for n in self.__bpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wqueenlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bqueenlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__whorselist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bhorselist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bkinglist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+					if ischeck:
+						return True
+				for y in self.__bqueenlist:
+					if y[0]==x[0]:
+						print("black queen")
+						ischeck=True
+						if y[1]-x[1]<0:
+							placement="neg"
+						else:
+							placement="pos"
+						distance=abs(y[1]-x[1])
+						for n in self.__bpawnlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bhorselist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__whorselist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wqueenlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bkinglist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+					elif y[1]==x[1]:
+						print("black queen")
+						ischeck=True
+						if y[0]-x[0]<0:
+							placement="neg"
+						else:
+							placement="pos"
+						distance=abs(y[0]-x[0])
+						for n in self.__bpawnlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bhorselist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__whorselist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wqueenlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bkinglist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+					if ischeck:
+						return True
+					if x[0]-y[0]==x[1]-y[1]:
+						print("black queen")
+						ischeck=True
+						distance=abs(x[0]-y[0])
+						if x[0]-y[0]<0:
+							pos="neg"
+						else:
+							pos="pos"
+						for n in self.__bpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wqueenlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__whorselist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bhorselist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bkinglist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						
+					elif -1*(x[0]-y[0])==x[1]-y[1]:
+						print("black queen")
+						ischeck=True
+						distance=abs(x[0]-y[0])
+						if x[0]-y[0]<0:
+							pos="neg"
+						else:
+							pos="pos"
+						for n in self.__bpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wqueenlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__whorselist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bhorselist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bkinglist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+					if ischeck:
+						return True
+				for y in self.__bpawnlist:
+					if y[1]+1==x[1] and (y[0]+1==x[0] or y[0]-1==x[0]):
+						print("black queen")
+						return True
+				for y in self.__bhorselist:
+					if (x[0]+2==y[0] and x[1]+1==y[1]) or (x[0]-2==y[0] and x[1]+1==y[1]) or (x[0]+2==y[0] and x[1]-1==y[1]) or (x[0]-2==y[0] and x[1]-1==y[1]) or (x[0]+1==y[0] and x[1]+2==y[1]) or (x[0]-1==y[0] and x[1]+2==y[1]) or (x[0]+1==y[0] and x[1]-2==y[1]) or (x[0]-1==y[0] and x[1]-2==y[1]):
+						print("black queen")
+						return True
+				for y in self.__bkinglist:
+					if abs(y[0]-x[0])==1 or abs(y[1]-x[1])==1:
+						print("black queen")
+						return True
+		if side=="black":
+			for x in self.__bkinglist:
+				for y in self.__wcastlelist:
+					if y[0]==x[0]:
+						print("white castle")
+						ischeck=True
+						if y[1]-x[1]<0:
+							placement="neg"
+						else:
+							placement="pos"
+						distance=abs(y[1]-x[1])
+						for n in self.__bpawnlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bhorselist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__whorselist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bqueenlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wqueenlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bkinglist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+					elif y[1]==x[1]:
+						print("white castle")
+						ischeck=True
+						if y[0]-x[0]<0:
+							placement="neg"
+						else:
+							placement="pos"
+						distance=abs(y[0]-x[0])
+						for n in self.__bpawnlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bhorselist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__whorselist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bqueenlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wqueenlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bkinglist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+					if ischeck:
+						return True
+				for y in self.__wbishoplist:
+					if x[0]-y[0]==x[1]-y[1]:
+						print("white bishop 1")
+						ischeck=True
+						distance=abs(x[0]-y[0])
+						if x[0]-y[0]<0:
+							pos="neg"
+						else:
+							pos="pos"
+						for n in self.__bpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wqueenlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bqueenlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__whorselist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bhorselist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bkinglist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						
+					elif -1*(x[0]-y[0])==x[1]-y[1]:
+						print("white bishop 2")
+						ischeck=True
+						distance=abs(x[0]-y[0])
+						if x[0]-y[0]<0:
+							pos="neg"
+						else:
+							pos="pos"
+						for n in self.__bpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wqueenlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bqueenlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__whorselist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bhorselist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bkinglist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+					if ischeck:
+						return True
+				for y in self.__wqueenlist:
+					if y[0]==x[0]:
+						print("white queen 1")
+						ischeck=True
+						if y[1]-x[1]<0:
+							placement="neg"
+						else:
+							placement="pos"
+						distance=abs(y[1]-x[1])
+						for n in self.__bpawnlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bhorselist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__whorselist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bqueenlist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+						for n in self.__bkinglist:
+							if placement=="neg" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]<0:
+								ischeck=False
+							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
+								ischeck=False
+					elif y[1]==x[1]:
+						print("white queen 2")
+						ischeck=True
+						if y[0]-x[0]<0:
+							placement="neg"
+						else:
+							placement="pos"
+						distance=abs(y[0]-x[0])
+						for n in self.__bpawnlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bhorselist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__whorselist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bqueenlist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+						for n in self.__bkinglist:
+							if placement=="neg" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]<0:
+								ischeck=False
+							elif placement=="pos" and n[1]==y[1] and abs(n[0]-x[0])<distance and n[0]-x[0]>0:
+								ischeck=False
+					if ischeck:
+						return True
+					if x[0]-y[0]==x[1]-y[1]:
+						print("white queen 3")
+						ischeck=True
+						distance=abs(x[0]-y[0])
+						if x[0]-y[0]<0:
+							pos="neg"
+						else:
+							pos="pos"
+						for n in self.__bpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bqueenlist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__whorselist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bhorselist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bkinglist:
+							if pos=="neg" and x[0]-n[0]<0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and x[0]-n[0]==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						
+					elif -1*(x[0]-y[0])==x[1]-y[1]:
+						print("white queen 4")
+						ischeck=True
+						distance=abs(x[0]-y[0])
+						if x[0]-y[0]<0:
+							pos="neg"
+						else:
+							pos="pos"
+						for n in self.__bpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wpawnlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*x([0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wbishoplist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bqueenlist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bbishoplist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__whorselist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bhorselist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__wcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bcastlelist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+						for n in self.__bkinglist:
+							if pos=="neg" and x[0]-n[0]<0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+							elif pos=="pos" and x[0]-n[0]>0 and -1*(x[0]-n[0])==x[1]-n[1] and abs(x[0]-n[0])<distance:
+								ischeck=False
+					if ischeck:
+						return True
+				for y in self.__wpawnlist:
+					if y[1]-1==x[1] and (y[0]+1==x[0] or y[0]-1==x[0]):
+						print("white pawn")
+						return True
+				for y in self.__whorselist:
+					if (x[0]+2==y[0] and x[1]+1==y[1]) or (x[0]-2==y[0] and x[1]+1==y[1]) or (x[0]+2==y[0] and x[1]-1==y[1]) or (x[0]-2==y[0] and x[1]-1==y[1]) or (x[0]+1==y[0] and x[1]+2==y[1]) or (x[0]-1==y[0] and x[1]+2==y[1]) or (x[0]+1==y[0] and x[1]-2==y[1]) or (x[0]-1==y[0] and x[1]-2==y[1]):
+						print("white horse")
+						return True
+				for y in self.__wkinglist:
+					if abs(y[0]-x[0])==1 or abs(y[1]-x[1])==1:
+						print("white king")
+						return True
+		return False
+				

@@ -119,7 +119,7 @@ def onClick(arg1,arg2):
                         thisimage="queenw2"
                     else:
                         thisimage="white"
-                    var=("Button(mainframe, highlightbackground='yellow', image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
+                    var=("Button(mainframe, highlightbackground='red', image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
                 else:
                     if this=="whitepawn":
                         thisimage="pawnb"
@@ -147,7 +147,7 @@ def onClick(arg1,arg2):
                         thisimage="queenb2"
                     else:
                         thisimage="black"
-                    var=("Button(mainframe, highlightbackground='yellow', image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
+                    var=("Button(mainframe, highlightbackground='red', image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
             else:
                 if (thisput[0])%2==0:
                     if this=="whitepawn":
@@ -176,7 +176,7 @@ def onClick(arg1,arg2):
                         thisimage="queenb2"
                     else:
                         thisimage="black"
-                    var=("Button(mainframe, highlightbackground='yellow', image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
+                    var=("Button(mainframe, highlightbackground='red', image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
                 else:
                     if this=="whitepawn":
                         thisimage="pawnw"
@@ -204,7 +204,7 @@ def onClick(arg1,arg2):
                         thisimage="queenw2"
                     else:
                         thisimage="white"
-                    var=("Button(mainframe, highlightbackground='yellow', image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
+                    var=("Button(mainframe, highlightbackground='red', image="+str(thisimage)+", command=lambda: onClick("+str(thisput[0])+","+str(thisput[1])+")).grid(column="+str(thisput[0])+", row="+str(thisput[1])+")")
             exec(var)
     else:
     	#If piece has already been selected...
