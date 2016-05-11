@@ -36,3 +36,5 @@ Update 1/22/2016: Pawn changes to queen when other side is reached.
 Update 1/25/2016: King bug fixed. Check logic started. Code comments started. Made function for switching resetting turn if false move is made. Saved about 250 lines of code.
 
 Update 5/10/2016: Check completed. Debugging in progress. Code comments will be added next. En Passant, Castling, and Checkmate are planned.
+
+Update 5/11/2016: A few Check bug fixes. Also a black bishop bug fix where it would turn into a white bishop.

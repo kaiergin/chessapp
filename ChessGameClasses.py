@@ -22,8 +22,8 @@ class Piece:
 		self.pastSpot=[]
 		self.special=False
 		self.special1=False
-		self.whitecheck=False
-		self.blackcheck=False
+		self.whitecastling=True
+		self.blackcastling=True
 	def generate(self,x,y):
 		piecelist=[x,y]
 		if y==6:
@@ -427,7 +427,7 @@ class Piece:
 				thisnumber2=self.pastSpot[1]-check[1]
 				if self.checklist("black",check[0],check[1])=="no":
 					self.switcher()
-					self.__wbishoplist.append(self.pastSpot)
+					self.__bbishoplist.append(self.pastSpot)
 					return "no"
 				if thisnumber1==thisnumber2 or thisnumber1*-1==thisnumber2:
 					if thisnumber1<0:
@@ -555,62 +555,62 @@ class Piece:
 			for x in self.__wpawnlist:
 				if check==x:
 					self.__wpawnlist.remove(x)
-					piecetaken="self.__wpawnlist"
+					piecetaken="whitepawn"
 					didremovepiece=True
 			for x in self.__whorselist:
 				if check==x:
 					self.__whorselist.remove(x)
-					piecetaken="self.__whorselist"
+					piecetaken="whitehorse"
 					didremovepiece=True
 			for x in self.__wcastlelist:
 				if check==x:
 					self.__wcastlelist.remove(x)
-					piecetaken="self.__wcastlelist"
+					piecetaken="whitecastle"
 					didremovepiece=True
 			for x in self.__wkinglist:
 				if check==x:
 					self.__wkinglist.remove(x)
-					piecetaken="self.__wkinglist"
+					piecetaken="whiteking"
 					didremovepiece=True
 			for x in self.__wbishoplist:
 				if check==x:
 					self.__wbishoplist.remove(x)
-					piecetaken="self.__wbishoplist"
+					piecetaken="whitebishop"
 					didremovepiece=True
 			for x in self.__wqueenlist:
 				if check==x:
 					self.__wqueenlist.remove(x)
-					piecetaken="self.__wqueenlist"
+					piecetaken="whitequeen"
 					didremovepiece=True
 			for x in self.__bpawnlist:
 				if check==x:
 					self.__bpawnlist.remove(x)
-					piecetaken="self.__bpawnlist"
+					piecetaken="blackpawn"
 					didremovepiece=True
 			for x in self.__bhorselist:
 				if check==x:
 					self.__bhorselist.remove(x)
-					piecetaken="self.__bhorselist"
+					piecetaken="blackhorse"
 					didremovepiece=True
 			for x in self.__bcastlelist:
 				if check==x:
 					self.__bcastlelist.remove(x)
-					piecetaken="self.__bcastlelist"
+					piecetaken="blackcastle"
 					didremovepiece=True
 			for x in self.__bkinglist:
 				if check==x:
 					self.__bkinglist.remove(x)
-					piecetaken="self.__bkinglist"
+					piecetaken="blackking"
 					didremovepiece=True
 			for x in self.__bbishoplist:
 				if check==x:
 					self.__bbishoplist.remove(x)
-					piecetaken="self.__bbishoplist"
+					piecetaken="blackbishop"
 					didremovepiece=True
 			for x in self.__bqueenlist:
 				if check==x:
 					self.__bqueenlist.remove(x)
-					piecetaken="self.__bqueenlist"
+					piecetaken="blackqueen"
 					didremovepiece=True
 			if r=="whitepawn":
 				self.__wpawnlist.append(check)
@@ -688,10 +688,36 @@ class Piece:
 					self.__bqueenlist.append(self.pastSpot)
 					self.__bqueenlist.remove(check)
 				if didremovepiece:
-					runvar="self."+piecetaken+".append(check)"
-					exec(runvar)
+					if piecetaken=="whitepawn":
+						self.__wpawnlist.append(check)
+					elif piecetaken=="whitecastle":
+						self.__wcastlelist.append(check)
+					elif piecetaken=="whitehorse":
+						self.__whorselist.append(check)
+					elif piecetaken=="whitebishop":
+						self.__wbishoplist.append(check)
+					elif piecetaken=="whiteking":
+						self.__wkinglist.append(check)
+					elif piecetaken=="whitequeen":
+						self.__wqueenlist.append(check)
+					elif piecetaken=="blackpawn":
+						self.__bpawnlist.append(check)
+					elif piecetaken=="blackcastle":
+						self.__bcastlelist.append(check)
+					elif piecetaken=="blackhorse":
+						self.__bhorselist.append(check)
+					elif piecetaken=="blackbishop":
+						self.__bbishoplist.append(check)
+					elif piecetaken=="blackking":
+						self.__bkinglist.append(check)
+					elif piecetaken=="blackqueen":
+						self.__bqueenlist.append(check)
 				self.switcher()
 				return "no"
+			if r=="blackking":
+				self.blackcastling=False
+			if r=="whiteking":
+				self.whitecastling=False
 	def checklist(self,color,a,b):
 		num=[a,b]
 		if color=="white":
@@ -787,8 +813,8 @@ class Piece:
 		self.boolean=True
 		self.turn=True
 		self.pastSpot=[]
-		self.whitecheck=False
-		self.blackcheck=False
+		self.whitecastling=True
+		self.blackcastling=True
 	def switcher(self):
 		self.boolean=True
 		if self.turn:
@@ -1278,15 +1304,15 @@ class Piece:
 						return True
 				for y in self.__bpawnlist:
 					if y[1]+1==x[1] and (y[0]+1==x[0] or y[0]-1==x[0]):
-						print("black queen")
+						print("black pawn")
 						return True
 				for y in self.__bhorselist:
 					if (x[0]+2==y[0] and x[1]+1==y[1]) or (x[0]-2==y[0] and x[1]+1==y[1]) or (x[0]+2==y[0] and x[1]-1==y[1]) or (x[0]-2==y[0] and x[1]-1==y[1]) or (x[0]+1==y[0] and x[1]+2==y[1]) or (x[0]-1==y[0] and x[1]+2==y[1]) or (x[0]+1==y[0] and x[1]-2==y[1]) or (x[0]-1==y[0] and x[1]-2==y[1]):
-						print("black queen")
+						print("black horse")
 						return True
 				for y in self.__bkinglist:
-					if abs(y[0]-x[0])==1 or abs(y[1]-x[1])==1:
-						print("black queen")
+					if abs(y[0]-x[0])<=1 and abs(y[1]-x[1])<=1:
+						print("black king")
 						return True
 		if side=="black":
 			for x in self.__bkinglist:
@@ -1776,7 +1802,7 @@ class Piece:
 						print("white horse")
 						return True
 				for y in self.__wkinglist:
-					if abs(y[0]-x[0])==1 or abs(y[1]-x[1])==1:
+					if abs(y[0]-x[0])<=1 and abs(y[1]-x[1])<=1:
 						print("white king")
 						return True
 		return False
