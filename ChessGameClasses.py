@@ -3,6 +3,7 @@
 #Class list
 class Piece:
 	def __init__(self):
+		# Initially creating blank lists to hold different types of pieces
 		self.__wpawnlist=list()
 		self.__wcastlelist=list()
 		self.__whorselist=list()
@@ -17,17 +18,18 @@ class Piece:
 		self.__bkinglist=list()
 		self.__bqueenlist=list()
 		self.__bkinglist=list()
-		self.boolean=True
-		self.turn=True
-		self.pastSpot=[]
-		self.special=False
-		self.special1=False
-		self.whitecastling=True
-		self.blackcastling=True
+		self.boolean=True # Selecting a piece vs moving a piece
+		self.turn=True # Who's turn is it?
+		self.pastSpot=[] # A temporary variable to hold a piece's past spot
+		self.special=False # Special case for pawns turning into queens (white)
+		self.special1=False # Same ^ but for black
+		self.whitecastling=True # Castling variable to check if the king has moved yet (white)
+		self.blackcastling=True # Same ^ but for black
 	def generate(self,x,y):
+		# Generates board. Places pieces in the their 'initial' starting place
 		piecelist=[x,y]
 		if y==6:
-			self.__wpawnlist.append(piecelist)
+			self.__wpawnlist.append(piecelist) # Adds the coordinates of the piece to its piece list
 			return "whitepawn"
 		if y==7 and (x==0 or x==7):
 			self.__wcastlelist.append(piecelist)
@@ -63,16 +65,17 @@ class Piece:
 			self.__bqueenlist.append(piecelist)
 			return "blackqueen"
 	def clicked(self,x,y,r="blank"):
+		# When a piece is clicked
 		check=[x,y]
-		if self.boolean:
+		if self.boolean: # If selecting
 			self.boolean=False
 			self.pastSpot=check
 			if self.turn:
 				self.turn=False
 				for x in self.__wpawnlist:
 					if check==x:
-						self.__wpawnlist.remove(x)
-						return "whitepawn"
+						self.__wpawnlist.remove(x) # Removing piece from position
+						return "whitepawn" # Returns the type of piece in the square selected
 				for x in self.__whorselist:
 					if check==x:
 						self.__whorselist.remove(x)
@@ -121,13 +124,15 @@ class Piece:
 						return "blackqueen"
 			self.switcher()
 			return "blank"
-		else:
+		else: # If moving
+			# Essentially checks if the move is legal based off of the type of piece it is
 			if r=="whitepawn":
 				if (self.pastSpot[1]==check[1]+1 and (self.pastSpot[0]==check[0])):
 					if self.checklist("both",self.pastSpot[0],self.pastSpot[1]-1)=="no":
-						self.switcher()
-						self.__wpawnlist.append(self.pastSpot)
+						self.switcher() # This sets the turn back the original person's turn
+						self.__wpawnlist.append(self.pastSpot) # Adds the piece back to where it was previously
 						return "no"
+						# When no is return that means the move is illegal and the move will be reset
 				elif (self.pastSpot[1]==check[1]+1 and (self.pastSpot[0]==check[0]+1)):
 					if self.checklist("black",self.pastSpot[0]-1,self.pastSpot[1]-1)!="no":
 						self.switcher()
@@ -147,7 +152,7 @@ class Piece:
 					self.switcher()
 					self.__wpawnlist.append(self.pastSpot)
 					return "no"
-				if check[1]==0:
+				if check[1]==0: # Special case for pawn -> queen
 					r="whitequeen"
 					self.special=True
 			elif r=="whitecastle":
@@ -552,6 +557,7 @@ class Piece:
 					self.__bqueenlist.append(self.pastSpot)
 					return "no"
 			didremovepiece=False
+			# Checks to see if a piece was taken. If piece was taken, it needs to be removed from the list
 			for x in self.__wpawnlist:
 				if check==x:
 					self.__wpawnlist.remove(x)
@@ -612,6 +618,7 @@ class Piece:
 					self.__bqueenlist.remove(x)
 					piecetaken="blackqueen"
 					didremovepiece=True
+			# Adds the piece moved to its new spot
 			if r=="whitepawn":
 				self.__wpawnlist.append(check)
 			elif r=="whitecastle":
@@ -636,20 +643,22 @@ class Piece:
 				self.__bkinglist.append(check)
 			elif r=="blackqueen":
 				self.__bqueenlist.append(check)
-			
 			self.boolean=True
+			# For special pawn cases
 			if self.special:
 				self.special=False
 				return "special1"
 			if self.special1:
 				self.special1=False
 				return "special2"
+			# Checks if in check
 			arecheck=False
 			if self.turn:
 				arecheck=self.checkcheck("black")
 			else:
 				arecheck=self.checkcheck("white")
 			if arecheck:
+				# If in check, puts piece back into previous position and returns to previous game state
 				print("CHECK")
 				if r=="whitepawn":
 					self.__wpawnlist.append(self.pastSpot)
@@ -688,6 +697,7 @@ class Piece:
 					self.__bqueenlist.append(self.pastSpot)
 					self.__bqueenlist.remove(check)
 				if didremovepiece:
+					# If a piece was removed, but was in check, restores taken piece
 					if piecetaken=="whitepawn":
 						self.__wpawnlist.append(check)
 					elif piecetaken=="whitecastle":
@@ -718,7 +728,9 @@ class Piece:
 				self.blackcastling=False
 			if r=="whiteking":
 				self.whitecastling=False
-	def checklist(self,color,a,b):
+	def checklist(self,color,a,b): 
+		# This function is for checking if there is a piece on a given square
+		# It is used to make sure that pieces aren't jumping over each other
 		num=[a,b]
 		if color=="white":
 			for x in self.__wpawnlist:
@@ -796,6 +808,7 @@ class Piece:
 				if num==x:
 					return "no"
 	def clear(self):
+		# Clears all lists for resetting the game
 		self.__wpawnlist=[]
 		self.__wcastlelist=[]
 		self.__whorselist=[]
@@ -822,6 +835,13 @@ class Piece:
 		else:
 			self.turn=True
 	def checkcheck(self,side):
+		'''
+		This function checks for check
+		It essentially checks every piece on a side to see if the piece is putting the king in check
+		Then it checks to see if there is anything blocking that piece check
+		If the function returns True, that means the king is indeed in check and the move must be cancelled
+		Otherwise, the move is a valid move
+		'''
 		ischeck=False
 		if side=="white":
 			for x in self.__wkinglist:
