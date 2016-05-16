@@ -38,3 +38,5 @@ Update 1/25/2016: King bug fixed. Check logic started. Code comments started. Ma
 Update 5/10/2016: Check completed. Debugging in progress. Code comments will be added next. En Passant, Castling, and Checkmate are planned.
 
 Update 5/11/2016: A few Check bug fixes. Also a black bishop bug fix where it would turn into a white bishop.
+
+Update 5/16/2016: Code comments in ChessGameClasses added.
