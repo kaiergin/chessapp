@@ -18,6 +18,7 @@ class Piece:
 		self.__bkinglist=list()
 		self.__bqueenlist=list()
 		self.__bkinglist=list()
+		self.checkingCheckmate=False
 		self.boolean=True # Selecting a piece vs moving a piece
 		self.turn=True # Who's turn is it?
 		self.pastSpot=[] # A temporary variable to hold a piece's past spot
@@ -728,6 +729,13 @@ class Piece:
 				self.blackcastling=False
 			if r=="whiteking":
 				self.whitecastling=False
+			if not self.checkingCheckmate:
+				if self.turn:
+					variable=self.checkcheckmate("white")
+					self.checkingCheckmate=False
+				else:
+					variable=self.checkcheckmate("black")
+					self.checkingCheckmate=False
 	def checklist(self,color,a,b): 
 		# This function is for checking if there is a piece on a given square
 		# It is used to make sure that pieces aren't jumping over each other
@@ -1086,7 +1094,6 @@ class Piece:
 						return True
 				for y in self.__bqueenlist:
 					if y[0]==x[0]:
-						print("black queen")
 						ischeck=True
 						if y[1]-x[1]<0:
 							placement="neg"
@@ -1144,7 +1151,6 @@ class Piece:
 							elif placement=="pos" and n[0]==y[0] and abs(n[1]-x[1])<distance and n[1]-x[1]>0:
 								ischeck=False
 					elif y[1]==x[1]:
-						print("black queen")
 						ischeck=True
 						if y[0]-x[0]<0:
 							placement="neg"
@@ -1204,7 +1210,6 @@ class Piece:
 					if ischeck:
 						return True
 					if x[0]-y[0]==x[1]-y[1]:
-						print("black queen")
 						ischeck=True
 						distance=abs(x[0]-y[0])
 						if x[0]-y[0]<0:
@@ -1263,7 +1268,6 @@ class Piece:
 								ischeck=False
 						
 					elif -1*(x[0]-y[0])==x[1]-y[1]:
-						print("black queen")
 						ischeck=True
 						distance=abs(x[0]-y[0])
 						if x[0]-y[0]<0:
@@ -1826,4 +1830,143 @@ class Piece:
 						print("white king")
 						return True
 		return False
-				
+	def tempSave(self):
+		temp=open("temp.txt","w")
+		temp.write(str(self.__wpawnlist) + "\n")
+		temp.write(str(self.__bpawnlist) + "\n")
+		temp.write(str(self.__wcastlelist) + "\n")
+		temp.write(str(self.__bcastlelist) + "\n")
+		temp.write(str(self.__wbishoplist) + "\n")
+		temp.write(str(self.__bbishoplist) + "\n")
+		temp.write(str(self.__whorselist) + "\n")
+		temp.write(str(self.__bhorselist) + "\n")
+		temp.write(str(self.__wqueenlist) + "\n")
+		temp.write(str(self.__bqueenlist) + "\n")
+		temp.write(str(self.__wkinglist) + "\n")
+		temp.write(str(self.__bkinglist) + "\n")
+		temp.write(str(self.boolean) + "\n")
+		temp.write(str(self.turn) + "\n")
+		temp.write(str(self.pastSpot) + "\n")
+		temp.write(str(self.special) + "\n")
+		temp.write(str(self.special1) + "\n")
+		temp.close()
+		
+	def tempLoad(self):
+		temp=open("temp.txt","r")
+		self.__wpawnlist=eval(temp.readline())
+		self.__bpawnlist=eval(temp.readline())
+		self.__wcastlelist=eval(temp.readline())
+		self.__bcastlelist=eval(temp.readline())
+		self.__wbishoplist=eval(temp.readline())
+		self.__bbishoplist=eval(temp.readline())
+		self.__whorselist=eval(temp.readline())
+		self.__bhorselist=eval(temp.readline())
+		self.__wqueenlist=eval(temp.readline())
+		self.__bqueenlist=eval(temp.readline())
+		self.__wkinglist=eval(temp.readline())
+		self.__bkinglist=eval(temp.readline())
+		self.boolean=eval(temp.readline())
+		self.turn=eval(temp.readline())
+		self.pastSpot=eval(temp.readline())
+		self.special=eval(temp.readline())
+		self.special1=eval(temp.readline())
+		temp.close()
+		
+	def checkcheckmate(self,turn):
+		self.checkingCheckmate=True
+		print("started")
+		if not self.checkcheck(turn):
+			return False
+		self.tempSave()
+		wpawnlist=self.__wpawnlist
+		wbishoplist=self.__wbishoplist
+		whorselist=self.__whorselist
+		wcastlelist=self.__wcastlelist
+		wqueenlist=self.__wqueenlist
+		wkinglist=self.__wkinglist
+		bpawnlist=self.__bpawnlist
+		bbishoplist=self.__bbishoplist
+		bhorselist=self.__bhorselist
+		bcastlelist=self.__bcastlelist
+		bqueenlist=self.__bqueenlist
+		bkinglist=self.__bkinglist
+		for x in range(8):
+			for y in range(8):
+				if turn=="white":
+					for n in wpawnlist:
+						if self.isLegal(x,y,n,"whitepawn"):
+							self.tempLoad()
+							print("can block with white pawn " + str(x) + " " + str(y))
+							return False
+						self.tempLoad()
+					for n in wbishoplist:
+						if self.isLegal(x,y,n,"whitebishop"):
+							self.tempLoad()
+							print("can block with white bishop " + str(x) + " " + str(y))
+							return False
+						self.tempLoad()
+					for n in whorselist:
+						if self.isLegal(x,y,n,"whitehorse"):
+							self.tempLoad()
+							print("can block with white horse " + str(x) + " " + str(y))
+							return False
+						self.tempLoad()
+					for n in wcastlelist:
+						if self.isLegal(x,y,n,"whitecastle"):
+							self.tempLoad()
+							print("can block with white castle " + str(x) + " " + str(y))
+							return False
+						self.tempLoad()
+					for n in wqueenlist:
+						if self.isLegal(x,y,n,"whitequeen"):
+							self.tempLoad()
+							print("can block with white queen " + str(x) + " " + str(y))
+							return False
+						self.tempLoad()
+					for n in wkinglist:
+						if self.isLegal(x,y,n,"whiteking"):
+							self.tempLoad()
+							print("can move white king " + str(x) + " " + str(y))
+							return False
+						self.tempLoad()
+				else:
+					for n in bpawnlist:
+						if self.isLegal(x,y,n,"blackpawn"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+					for n in bbishoplist:
+						if self.isLegal(x,y,n,"blackbishop"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+					for n in bhorselist:
+						if self.isLegal(x,y,n,"blackhorse"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+					for n in bcastlelist:
+						if self.isLegal(x,y,n,"blackcastle"):
+							self.tempLoad()
+							return False
+							self.tempLoad()
+					for n in bqueenlist:
+						if self.isLegal(x,y,n,"blackqueen"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+					for n in bkinglist:
+						if self.isLegal(x,y,n,"blackking"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+		self.tempLoad()
+		print("Checkmate!")
+		return True
+	def isLegal(self,x,y,n,typeOfPiece):
+		self.clicked(n[0],n[1])
+		legalmove=self.clicked(x,y,typeOfPiece)
+		if legalmove=="no":
+			return False
+		else:
+			return True

@@ -40,3 +40,5 @@ Update 5/10/2016: Check completed. Debugging in progress. Code comments will be 
 Update 5/11/2016: A few Check bug fixes. Also a black bishop bug fix where it would turn into a white bishop.
 
 Update 5/16/2016: Code comments in ChessGameClasses added.
+
+Update 5/18/2016: Checkmate added. Stalemate planned. Bugs are still possible in Checkmate. An undo feature is being planned, allowing players to take back as many turns as they want. This will be done by saving previous board configurations to a text file.
