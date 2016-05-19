@@ -26,6 +26,12 @@ class Piece:
 		self.special1=False # Same ^ but for black
 		self.whitecastling=True # Castling variable to check if the king has moved yet (white)
 		self.blackcastling=True # Same ^ but for black
+		self.whitecastle1=True
+		self.whitecastle2=True
+		self.blackcastle1=True
+		self.blackcastle2=True
+		self.isCastling=False
+		
 	def generate(self,x,y):
 		# Generates board. Places pieces in the their 'initial' starting place
 		piecelist=[x,y]
@@ -262,6 +268,16 @@ class Piece:
 					return "no"
 				if (self.pastSpot[0]+1==check[0] and self.pastSpot[1]==check[1]) or (self.pastSpot[1]+1==check[1] and self.pastSpot[0]==check[0]) or (self.pastSpot[0]-1==check[0] and self.pastSpot[1]==check[1]) or (self.pastSpot[1]-1==check[1] and self.pastSpot[0]==check[0]) or (self.pastSpot[1]-1==check[1] and self.pastSpot[0]-1==check[0]) or (self.pastSpot[1]-1==check[1] and self.pastSpot[0]+1==check[0]) or (self.pastSpot[1]+1==check[1] and self.pastSpot[0]-1==check[0]) or (self.pastSpot[1]+1==check[1] and self.pastSpot[0]+1==check[0]):
 					pass
+				elif self.pastSpot[0]+2==check[0] and self.pastSpot[1]==check[1] and self.whitecastling and self.whitecastle2 and self.checklist("both",check[0],check[1])!="no" and self.checklist("both",check[0]-1,check[1])!="no":
+					if self.castlecheck("white",1):
+						self.__wcastlelist.remove([7,7])
+						self.__wcastlelist.append([5,7])
+						self.isCastling=True
+				elif self.pastSpot[0]-2==check[0] and self.pastSpot[1]==check[1] and self.whitecastling and self.whitecastle1 and self.checklist("both",check[0],check[1])!="no" and self.checklist("both",check[0]-1,check[1])!="no" and self.checklist("both",check[0]+1,check[1])!="no":
+					if self.castlecheck("white",2):
+						self.__wcastlelist.remove([0,7])
+						self.__wcastlelist.append([3,7])
+						self.isCastling=True
 				else:
 					self.switcher()
 					self.__wkinglist.append(self.pastSpot)
@@ -477,6 +493,16 @@ class Piece:
 					return "no"
 				if (self.pastSpot[0]+1==check[0] and self.pastSpot[1]==check[1]) or (self.pastSpot[1]+1==check[1] and self.pastSpot[0]==check[0]) or (self.pastSpot[0]-1==check[0] and self.pastSpot[1]==check[1]) or (self.pastSpot[1]-1==check[1] and self.pastSpot[0]==check[0]) or (self.pastSpot[1]-1==check[1] and self.pastSpot[0]-1==check[0]) or (self.pastSpot[1]-1==check[1] and self.pastSpot[0]+1==check[0]) or (self.pastSpot[1]+1==check[1] and self.pastSpot[0]-1==check[0]) or (self.pastSpot[1]+1==check[1] and self.pastSpot[0]+1==check[0]):
 					pass
+				elif self.pastSpot[0]+2==check[0] and self.pastSpot[1]==check[1] and self.blackcastling and self.blackcastle2 and self.checklist("both",check[0],check[1])!="no" and self.checklist("both",check[0]-1,check[1])!="no":
+					if self.castlecheck("black",1):
+						self.__bcastlelist.remove([7,0])
+						self.__bcastlelist.append([5,7])
+						self.isCastling=True
+				elif self.pastSpot[0]-2==check[0] and self.pastSpot[1]==check[1] and self.blackcastling and self.blackcastle1 and self.checklist("both",check[0],check[1])!="no" and self.checklist("both",check[0]-1,check[1])!="no" and self.checklist("both",check[0]+1,check[1])!="no":
+					if self.castlecheck("black",2):
+						self.__bcastlelist.remove([0,0])
+						self.__bcastlelist.append([3,0])
+						self.isCastling=True
 				else:
 					self.switcher()
 					self.__bkinglist.append(self.pastSpot)
@@ -645,13 +671,6 @@ class Piece:
 			elif r=="blackqueen":
 				self.__bqueenlist.append(check)
 			self.boolean=True
-			# For special pawn cases
-			if self.special:
-				self.special=False
-				return "special1"
-			if self.special1:
-				self.special1=False
-				return "special2"
 			# Checks if in check
 			arecheck=False
 			if self.turn:
@@ -697,6 +716,10 @@ class Piece:
 				elif r=="blackqueen":
 					self.__bqueenlist.append(self.pastSpot)
 					self.__bqueenlist.remove(check)
+				if self.special:
+					self.__wqueenlist.remove(check)
+				if self.special1:
+					self.__bqueenlist.remove(check)
 				if didremovepiece:
 					# If a piece was removed, but was in check, restores taken piece
 					if piecetaken=="whitepawn":
@@ -729,13 +752,36 @@ class Piece:
 				self.blackcastling=False
 			if r=="whiteking":
 				self.whitecastling=False
+			if r=="whitecastle" and self.pastSpot[0]==0 and self.pastSpot[1]==7:
+				self.whitecastle1=False
+			if r=="whitecastle" and self.pastSpot[0]==7 and self.pastSpot[1]==7:
+				self.whitecastle2=False
+				print("moved")
+			if r=="blackcastle" and self.pastSpot[0]==0 and self.pastSpot[1]==0:
+				self.blackcastle1=False
+			if r=="blackcastle" and self.pastSpot[0]==7 and self.pastSpot[1]==0:
+				self.blackcastle2=False
 			if not self.checkingCheckmate:
 				if self.turn:
 					variable=self.checkcheckmate("white")
 					self.checkingCheckmate=False
+					stalemate=self.checkstalemate("white")
+					self.checkingCheckmate=False
 				else:
 					variable=self.checkcheckmate("black")
 					self.checkingCheckmate=False
+					stalemate=self.checkstalemate("black")
+					self.checkingCheckmate=False
+				if self.isCastling:
+					self.isCastling=False
+					return "iscastle"
+			# For special pawn cases
+			if self.special:
+				self.special=False
+				return "special1"
+			if self.special1:
+				self.special1=False
+				return "special2"
 	def checklist(self,color,a,b): 
 		# This function is for checking if there is a piece on a given square
 		# It is used to make sure that pieces aren't jumping over each other
@@ -1874,9 +1920,9 @@ class Piece:
 		
 	def checkcheckmate(self,turn):
 		self.checkingCheckmate=True
-		print("started")
 		if not self.checkcheck(turn):
 			return False
+		print("Checking checkmate")
 		self.tempSave()
 		wpawnlist=self.__wpawnlist
 		wbishoplist=self.__wbishoplist
@@ -1970,3 +2016,176 @@ class Piece:
 			return False
 		else:
 			return True
+	def checkstalemate(self,turn):
+		self.checkingCheckmate=True
+		print("Checking stalemate")
+		self.tempSave()
+		wpawnlist=self.__wpawnlist
+		wbishoplist=self.__wbishoplist
+		whorselist=self.__whorselist
+		wcastlelist=self.__wcastlelist
+		wqueenlist=self.__wqueenlist
+		wkinglist=self.__wkinglist
+		bpawnlist=self.__bpawnlist
+		bbishoplist=self.__bbishoplist
+		bhorselist=self.__bhorselist
+		bcastlelist=self.__bcastlelist
+		bqueenlist=self.__bqueenlist
+		bkinglist=self.__bkinglist
+		for x in range(8):
+			for y in range(8):
+				if turn=="white":
+					for n in wpawnlist:
+						if self.isLegal(x,y,n,"whitepawn"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+					for n in wbishoplist:
+						if self.isLegal(x,y,n,"whitebishop"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+					for n in whorselist:
+						if self.isLegal(x,y,n,"whitehorse"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+					for n in wcastlelist:
+						if self.isLegal(x,y,n,"whitecastle"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+					for n in wqueenlist:
+						if self.isLegal(x,y,n,"whitequeen"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+					for n in wkinglist:
+						if self.isLegal(x,y,n,"whiteking"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+				else:
+					for n in bpawnlist:
+						if self.isLegal(x,y,n,"blackpawn"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+					for n in bbishoplist:
+						if self.isLegal(x,y,n,"blackbishop"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+					for n in bhorselist:
+						if self.isLegal(x,y,n,"blackhorse"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+					for n in bcastlelist:
+						if self.isLegal(x,y,n,"blackcastle"):
+							self.tempLoad()
+							return False
+							self.tempLoad()
+					for n in bqueenlist:
+						if self.isLegal(x,y,n,"blackqueen"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+					for n in bkinglist:
+						if self.isLegal(x,y,n,"blackking"):
+							self.tempLoad()
+							return False
+						self.tempLoad()
+		self.tempLoad()
+		print("Stalemate!")
+		return True
+	def castlecheck(self,color,side):
+		if color=="white" and side==1:
+			self.tempSave()
+			self.__wkinglist.append(self.pastSpot)
+			print(self.__wkinglist)
+			if not self.checkcheck("white"):
+				self.__wkinglist[0][0]+=1
+				if not self.checkcheck("white"):
+					self.__wkinglist[0][0]+=1
+					if not self.checkcheck("white"):
+						self.tempLoad()
+						return True
+			self.tempLoad()
+			return False
+		elif color=="white" and side==2:
+			self.tempSave()
+			self.__wkinglist.append(self.pastSpot)
+			print(self.__wkinglist)
+			if not self.checkcheck("white"):
+				self.__wkinglist[0][0]-=1
+				if not self.checkcheck("white"):
+					self.__wkinglist[0][0]-=1
+					if not self.checkcheck("white"):
+						self.tempLoad()
+						return True
+			self.tempLoad()
+			return False
+		elif color=="black" and side==1:
+			self.tempSave()
+			self.__bkinglist.append(self.pastSpot)
+			if not self.checkcheck("black"):
+				self.__bkinglist[0][0]+=1
+				if not self.checkcheck("black"):
+					self.__bkinglist[0][0]+=1
+					if not self.checkcheck("black"):
+						self.tempLoad()
+						return True
+			self.tempLoad()
+			return False
+		elif color=="black" and side==2:
+			self.tempSave()
+			self.__bkinglist.append(self.pastSpot)
+			if not self.checkcheck("black"):
+				self.__bkinglist[0][0]-=1
+				if not self.checkcheck("black"):
+					self.__bkinglist[0][0]-=1
+					if not self.checkcheck("black"):
+						self.tempLoad()
+						return True
+			self.tempLoad()
+			return False
+	def refresh(self,x,y):
+		check=[x,y]
+		for n in self.__wpawnlist:
+			if check==n:
+				return "whitepawn"
+		for n in self.__whorselist:
+			if check==n:
+				return "whitehorse"
+		for n in self.__wcastlelist:
+			if check==n:
+				return "whitecastle"
+		for n in self.__wkinglist:
+			if check==n:
+				return "whiteking"
+		for n in self.__wbishoplist:
+			if check==n:
+				return "whitebishop"
+		for n in self.__wqueenlist:
+			if check==n:
+				return "whitequeen"
+		for n in self.__bpawnlist:
+			if check==n:
+				return "blackpawn"
+		for n in self.__bhorselist:
+			if check==n:
+				return "blackhorse"
+		for n in self.__bcastlelist:
+			if check==n:
+				return "blackcastle"
+		for n in self.__bkinglist:
+			if check==n:
+				return "blackking"
+		for n in self.__bbishoplist:
+			if check==n:
+				return "blackbishop"
+		for n in self.__bqueenlist:
+			if check==n:
+				return "blackqueen"
+		return "blank"

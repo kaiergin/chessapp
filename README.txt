@@ -42,3 +42,9 @@ Update 5/11/2016: A few Check bug fixes. Also a black bishop bug fix where it wo
 Update 5/16/2016: Code comments in ChessGameClasses added.
 
 Update 5/18/2016: Checkmate added. Stalemate planned. Bugs are still possible in Checkmate. An undo feature is being planned, allowing players to take back as many turns as they want. This will be done by saving previous board configurations to a text file.
+
+Acknoledgement: I realize that the program could have been much shorter if I used dictionaries for pieces/images. I also realize that if pieces used inheritance that the code would have been simpler and more efficient.
+I now also realize that if I made temporary saves of the board before every move was made, it would be much simpler to revert back to the previous game state when an illegal move is made.
+Because I started this project halfway through my python class, I had not learned about these things and by the time I learned them, it would have been more work to go back and change them.
+
+Update 5/19/2016: Stalemate added. Castling added. Possible bugs when moving pawn -> queen but in check. Testing will be necessary.
