@@ -31,7 +31,9 @@ class Piece:
 		self.blackcastle1=True
 		self.blackcastle2=True
 		self.isCastling=False
-		
+		self.passantw=[-2,-2]
+		self.passantb=[-2,-2]
+		self.didpassant=False
 	def generate(self,x,y):
 		# Generates board. Places pieces in the their 'initial' starting place
 		piecelist=[x,y]
@@ -142,19 +144,29 @@ class Piece:
 						# When no is return that means the move is illegal and the move will be reset
 				elif (self.pastSpot[1]==check[1]+1 and (self.pastSpot[0]==check[0]+1)):
 					if self.checklist("black",self.pastSpot[0]-1,self.pastSpot[1]-1)!="no":
-						self.switcher()
-						self.__wpawnlist.append(self.pastSpot)
-						return "no"
+						if self.passantb[0]==check[0] and self.passantb[1]-1==check[1]:
+							self.__bpawnlist.remove(self.passantb)
+							self.didpassant=True
+						else:
+							self.switcher()
+							self.__wpawnlist.append(self.pastSpot)
+							return "no"
 				elif (self.pastSpot[1]==check[1]+1 and (self.pastSpot[0]==check[0]-1)):
 					if self.checklist("black",self.pastSpot[0]+1,self.pastSpot[1]-1)!="no":
-						self.switcher()
-						self.__wpawnlist.append(self.pastSpot)
-						return "no"
+						if self.passantb[0]==check[0] and self.passantb[1]-1==check[1]:
+							self.__bpawnlist.remove(self.passantb)
+							self.didpassant=True
+						else:
+							self.switcher()
+							self.__wpawnlist.append(self.pastSpot)
+							return "no"
 				elif (self.pastSpot[1]==6 and self.pastSpot[1]==check[1]+2 and self.pastSpot[0]==check[0]):
 					if self.checklist("both",self.pastSpot[0],self.pastSpot[1]-2)=="no" or self.checklist("both",self.pastSpot[0],self.pastSpot[1]-1)=="no":
 						self.switcher()
 						self.__wpawnlist.append(self.pastSpot)
 						return "no"
+					else:
+						self.passantw=check
 				else:
 					self.switcher()
 					self.__wpawnlist.append(self.pastSpot)
@@ -367,19 +379,29 @@ class Piece:
 					pass
 				elif (self.pastSpot[1]==check[1]-1 and (self.pastSpot[0]==check[0]+1)):
 					if self.checklist("white",self.pastSpot[0]-1,self.pastSpot[1]+1)!="no":
-						self.switcher()
-						self.__bpawnlist.append(self.pastSpot)
-						return "no"
+						if self.passantw[0]==check[0] and self.passantw[1]+1==check[1]:
+							self.__wpawnlist.remove(self.passantw)
+							self.didpassant=True
+						else:
+							self.switcher()
+							self.__bpawnlist.append(self.pastSpot)
+							return "no"
 				elif (self.pastSpot[1]==check[1]-1 and (self.pastSpot[0]==check[0]-1)):
 					if self.checklist("white",self.pastSpot[0]+1,self.pastSpot[1]+1)!="no":
-						self.switcher()
-						self.__bpawnlist.append(self.pastSpot)
-						return "no"
+						if self.passantw[0]==check[0] and self.passantw[1]+1==check[1]:
+							self.__wpawnlist.remove(self.passantw)
+							self.didPassant=True
+						else:
+							self.switcher()
+							self.__bpawnlist.append(self.pastSpot)
+							return "no"
 				elif (self.pastSpot[1]==1 and self.pastSpot[1]==check[1]-2 and self.pastSpot[0]==check[0]):
 					if self.checklist("both",self.pastSpot[0],self.pastSpot[1]+2)=="no" or self.checklist("both",self.pastSpot[0],self.pastSpot[1]+1)=="no":
 						self.switcher()
 						self.__bpawnlist.append(self.pastSpot)
 						return "no"
+					else:
+						self.passantb=check
 				else:
 					self.switcher()
 					self.__bpawnlist.append(self.pastSpot)
@@ -696,7 +718,10 @@ class Piece:
 					self.__wkinglist.append(self.pastSpot)
 					self.__wkinglist.remove(check)
 				elif r=="whitequeen":
-					self.__wqueenlist.append(self.pastSpot)
+					if self.special:
+						self.__wpawnlist.append(self.pastSpot)
+					else:
+						self.__wqueenlist.append(self.pastSpot)
 					self.__wqueenlist.remove(check)
 				elif r=="blackpawn":
 					self.__bpawnlist.append(self.pastSpot)
@@ -714,14 +739,13 @@ class Piece:
 					self.__bkinglist.append(self.pastSpot)
 					self.__bkinglist.remove(check)
 				elif r=="blackqueen":
-					self.__bqueenlist.append(self.pastSpot)
+					if self.special1:
+						self.__bpawnlist.append(self.pastSpot)
+					else:
+						self.__bqueenlist.append(self.pastSpot)
 					self.__bqueenlist.remove(check)
-				if self.special:
-					self.__wqueenlist.remove(check)
-				if self.special1:
-					self.__bqueenlist.remove(check)
-				if didremovepiece:
 					# If a piece was removed, but was in check, restores taken piece
+				if didremovepiece:
 					if piecetaken=="whitepawn":
 						self.__wpawnlist.append(check)
 					elif piecetaken=="whitecastle":
@@ -746,6 +770,12 @@ class Piece:
 						self.__bkinglist.append(check)
 					elif piecetaken=="blackqueen":
 						self.__bqueenlist.append(check)
+				if self.didpassant:
+					self.didpassant=False
+					if self.turn:
+						self.__wpawnlist.append(self.passantw)
+					else:
+						self.__bpawnlist.append(self.passantb)
 				self.switcher()
 				return "no"
 			if r=="blackking":
@@ -775,13 +805,20 @@ class Piece:
 				if self.isCastling:
 					self.isCastling=False
 					return "iscastle"
-			# For special pawn cases
-			if self.special:
-				self.special=False
-				return "special1"
-			if self.special1:
-				self.special1=False
-				return "special2"
+				# For special pawn cases
+				if self.special:
+					self.special=False
+					return "special1"
+				if self.special1:
+					self.special1=False
+					return "special2"
+				if self.didpassant:
+					self.didpassant=False
+					return "passant"
+				if self.turn:
+					self.passantw=[-2,-2]
+				else:
+					self.passantb=[-2,-2]
 	def checklist(self,color,a,b): 
 		# This function is for checking if there is a piece on a given square
 		# It is used to make sure that pieces aren't jumping over each other
@@ -882,6 +919,14 @@ class Piece:
 		self.pastSpot=[]
 		self.whitecastling=True
 		self.blackcastling=True
+		self.whitecastle1=True
+		self.whitecastle2=True
+		self.blackcastle1=True
+		self.blackcastle2=True
+		self.isCastling=False
+		self.passantw=[-2,-2]
+		self.passantb=[-2,-2]
+		self.passant=False
 	def switcher(self):
 		self.boolean=True
 		if self.turn:
@@ -1895,6 +1940,16 @@ class Piece:
 		temp.write(str(self.pastSpot) + "\n")
 		temp.write(str(self.special) + "\n")
 		temp.write(str(self.special1) + "\n")
+		temp.write(str(self.whitecastling) + "\n")
+		temp.write(str(self.blackcastling) + "\n")
+		temp.write(str(self.whitecastle1) + "\n")
+		temp.write(str(self.whitecastle2) + "\n")
+		temp.write(str(self.blackcastle1) + "\n")
+		temp.write(str(self.blackcastle2) + "\n")
+		temp.write(str(self.isCastling) + "\n")
+		temp.write(str(self.passantw) + "\n")
+		temp.write(str(self.passantb) + "\n")
+		temp.write(str(self.passant) + "\n")
 		temp.close()
 		
 	def tempLoad(self):
@@ -1916,6 +1971,16 @@ class Piece:
 		self.pastSpot=eval(temp.readline())
 		self.special=eval(temp.readline())
 		self.special1=eval(temp.readline())
+		self.whitecastling=eval(temp.readline())
+		self.blackcastling=eval(temp.readline())
+		self.whitecastle1=eval(temp.readline())
+		self.whitecastle2=eval(temp.readline())
+		self.blackcastle1=eval(temp.readline())
+		self.blackcastle2=eval(temp.readline())
+		self.isCastling=eval(temp.readline())
+		self.passantw=eval(temp.readline())
+		self.passantb=eval(temp.readline())
+		self.passant=eval(temp.readline())
 		temp.close()
 		
 	def checkcheckmate(self,turn):
@@ -2189,3 +2254,63 @@ class Piece:
 			if check==n:
 				return "blackqueen"
 		return "blank"
+	def botSave(self):
+		temp=open("bot.txt","w")
+		temp.write(str(self.__wpawnlist) + "\n")
+		temp.write(str(self.__bpawnlist) + "\n")
+		temp.write(str(self.__wcastlelist) + "\n")
+		temp.write(str(self.__bcastlelist) + "\n")
+		temp.write(str(self.__wbishoplist) + "\n")
+		temp.write(str(self.__bbishoplist) + "\n")
+		temp.write(str(self.__whorselist) + "\n")
+		temp.write(str(self.__bhorselist) + "\n")
+		temp.write(str(self.__wqueenlist) + "\n")
+		temp.write(str(self.__bqueenlist) + "\n")
+		temp.write(str(self.__wkinglist) + "\n")
+		temp.write(str(self.__bkinglist) + "\n")
+		temp.write(str(self.boolean) + "\n")
+		temp.write(str(self.turn) + "\n")
+		temp.write(str(self.pastSpot) + "\n")
+		temp.write(str(self.special) + "\n")
+		temp.write(str(self.special1) + "\n")
+		temp.write(str(self.whitecastling) + "\n")
+		temp.write(str(self.blackcastling) + "\n")
+		temp.write(str(self.whitecastle1) + "\n")
+		temp.write(str(self.whitecastle2) + "\n")
+		temp.write(str(self.blackcastle1) + "\n")
+		temp.write(str(self.blackcastle2) + "\n")
+		temp.write(str(self.isCastling) + "\n")
+		temp.write(str(self.passantw) + "\n")
+		temp.write(str(self.passantb) + "\n")
+		temp.write(str(self.passant) + "\n")
+		temp.close()
+	def botLoad(self):
+		temp=open("bot.txt","r")
+		self.__wpawnlist=eval(temp.readline())
+		self.__bpawnlist=eval(temp.readline())
+		self.__wcastlelist=eval(temp.readline())
+		self.__bcastlelist=eval(temp.readline())
+		self.__wbishoplist=eval(temp.readline())
+		self.__bbishoplist=eval(temp.readline())
+		self.__whorselist=eval(temp.readline())
+		self.__bhorselist=eval(temp.readline())
+		self.__wqueenlist=eval(temp.readline())
+		self.__bqueenlist=eval(temp.readline())
+		self.__wkinglist=eval(temp.readline())
+		self.__bkinglist=eval(temp.readline())
+		self.boolean=eval(temp.readline())
+		self.turn=eval(temp.readline())
+		self.pastSpot=eval(temp.readline())
+		self.special=eval(temp.readline())
+		self.special1=eval(temp.readline())
+		self.whitecastling=eval(temp.readline())
+		self.blackcastling=eval(temp.readline())
+		self.whitecastle1=eval(temp.readline())
+		self.whitecastle2=eval(temp.readline())
+		self.blackcastle1=eval(temp.readline())
+		self.blackcastle2=eval(temp.readline())
+		self.isCastling=eval(temp.readline())
+		self.passantw=eval(temp.readline())
+		self.passantb=eval(temp.readline())
+		self.passant=eval(temp.readline())
+		temp.close()

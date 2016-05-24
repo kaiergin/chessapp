@@ -4,6 +4,8 @@ Each side will have a class with sub classes for pieces
 Calculations will have to be made for each class’s possible movement
 Bot will think up to 4 moves ahead looking at every move possibility and taking the path that results in the most possible points (based on piece captures)
 
+This technically is my first REAL coding project
+
 ----------------
 NOTE: 
 Because of complications when working with tkinter, the following were not able to work
@@ -12,6 +14,12 @@ Because of complications when working with tkinter, the following were not able 
 - saving multiple different buttons to a list
 There were work arounds but much extra code was needed
 ----------------
+
+Acknoledgements:
+I realize that the program could have been much shorter if I used dictionaries for pieces/images. I also realize that if pieces used inheritance that the code would have been simpler and more efficient.
+I now also realize that if I made temporary saves of the board before every move was made, it would be much simpler to revert back to the previous game state when an illegal move is made.
+Because I started this project halfway through my python class, I had not learned about these things and by the time I learned them, it would have been more work to go back and change them.
+I also have found out that my coding etiquette is very bad. Some of my lines are way to long and I use a lot of improper spacing. Sorry.
 
 Update: Chess game movement complete. Pieces still don’t have chess logic and do not understand player turns. Hopefully will add in turns and some of chess logic before end of class.
 
@@ -43,8 +51,8 @@ Update 5/16/2016: Code comments in ChessGameClasses added.
 
 Update 5/18/2016: Checkmate added. Stalemate planned. Bugs are still possible in Checkmate. An undo feature is being planned, allowing players to take back as many turns as they want. This will be done by saving previous board configurations to a text file.
 
-Acknoledgement: I realize that the program could have been much shorter if I used dictionaries for pieces/images. I also realize that if pieces used inheritance that the code would have been simpler and more efficient.
-I now also realize that if I made temporary saves of the board before every move was made, it would be much simpler to revert back to the previous game state when an illegal move is made.
-Because I started this project halfway through my python class, I had not learned about these things and by the time I learned them, it would have been more work to go back and change them.
-
 Update 5/19/2016: Stalemate added. Castling added. Possible bugs when moving pawn -> queen but in check. Testing will be necessary.
+
+Update 5/23/2016: En Passant added. Possible bugs when checking for checkmate after castling or after En Passant. AI is planned.
+
+Update 5/24/2016: Initial bot created. At the moment can only think in the present move. Bot not tested or added into the script.

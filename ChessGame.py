@@ -220,7 +220,9 @@ def onClick(arg1,arg2):
         	this="blackqueen"
         elif correct=="iscastle":
             print("refresh")
-            refresh()
+            refresh(0,7,0,0)
+        elif correct=="passant":
+            refresh(2,3,4,5)
         if past[1]%2==0: #Replaces previous coordinate with blank tile
             if (past[0])%2==0:
                 var=("Button(mainframe, image=white, command=lambda: onClick("+str(past[0])+","+str(past[1])+")).grid(column="+str(past[0])+", row="+str(past[1])+")")
@@ -485,8 +487,8 @@ def reStart():
                     buttonList.append("Button(mainframe, image="+str(thisimage)+", command=lambda: onClick("+str(x)+","+str(y)+")).grid(column="+str(x)+", row="+str(y)+")")
     for imagesin in buttonList:
         exec(imagesin)
-def refresh():
-    listnum=[0,7]
+def refresh(w,x,y,z):
+    listnum=[w,x,y,z]
     buttonList=[]
     for y in listnum:
         if y%2==0:
